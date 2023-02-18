@@ -19,7 +19,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "types": ["react", "styled-components"],
+    "types": ["react", "styled-components", "node", "react-router-dom"],
     "suppressImplicitAnyIndexErrors": true,
     "allowSyntheticDefaultImports": true,
     "noFallthroughCasesInSwitch": true
