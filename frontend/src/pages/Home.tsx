@@ -11,7 +11,7 @@ function Image({ message }: { message: any }) {
 }
 
 export const Home = () => {
-  const messages = useQuery("listMessages") || [];
+  const messages = useQuery("listMessages") ?? [];
 
   // const data = useQuery("listMessages");
   const sendMessage = useMutation("sendMessage:sendMessage");
