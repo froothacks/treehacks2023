@@ -4,6 +4,8 @@ import { App } from "./App";
 import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 import { ConvexProvider, ConvexReactClient } from "convex/react";
+import { ChakraProvider } from "@chakra-ui/react";
+import { theme } from "./theme";
 
 const address = process.env.REACT_APP_CONVEX_URL ?? "";
 
@@ -15,7 +17,9 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <ConvexProvider client={convex}>
-        <App />
+        <ChakraProvider theme={theme}>
+          <App />
+        </ChakraProvider>
       </ConvexProvider>
     </BrowserRouter>
   </React.StrictMode>
