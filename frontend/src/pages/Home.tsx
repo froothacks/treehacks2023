@@ -1,6 +1,10 @@
 import React from "react";
 import {useQuery, useMutation} from "src/convex/_generated/react";
 import {useRef, useState} from "react";
+import { Section } from "src/components/Section";
+import { Link } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
+import { BaseRoute } from "src/constants/routes";
 
 function Image({message}: { message: any }) {
     return <img src={message.url} height="300px" width="auto"/>;
