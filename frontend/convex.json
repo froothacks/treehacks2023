@@ -1,0 +1,7 @@
+{
+  "project": "gradient",
+  "team": "advait-m",
+  "prodUrl": "https://agile-mole-403.convex.cloud",
+  "functions": "src/convex/",
+  "authInfo": []
+}
