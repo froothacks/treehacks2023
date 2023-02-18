@@ -5,6 +5,14 @@ import cv2
 from transformers import TrOCRProcessor, VisionEncoderDecoderModel
 
 
+def __show(boxes, image):
+    for i in boxes:
+        x, y, h, w = i["x"], i["y"], i["height"], i["width"]
+        cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 255), 2)
+    cv2.imshow("Test", image)
+    cv2.waitKey(0)
+
+
 class Parser:
     def __init__(self):
         self.threshold = 50
