@@ -12,8 +12,8 @@ export const App = () => {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/worksheets" element={<Worksheet />} />
-        <Route path="/worksheet" element={<Worksheets />} />
+        <Route path="/worksheet" element={<Worksheet />} />
+        <Route path="/worksheets" element={<Worksheets />} />
       </Routes>
       <Footer />
     </div>
