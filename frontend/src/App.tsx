@@ -1,8 +1,8 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { Home } from "./pages/Home";
-import { Worksheet } from "./pages/Worksheet";
-import { Worksheets } from "./pages/Worksheets";
+import { Worksheet } from "./pages/worksheet";
+import { Worksheets } from "./pages/worksheets";
 
 export const App = () => {
   return (
