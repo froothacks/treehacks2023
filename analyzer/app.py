@@ -6,7 +6,6 @@ import cv2
 from convex import ConvexClient
 from flask import Flask
 from flask_restful import Resource, Api
-
 from config import url as convex_url
 from parser import Parser
 
@@ -34,3 +33,11 @@ api.add_resource(BoundingBoxService, '/answerkey')
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+messages = client.query("listMessages")
+print("PYTHON RPINT")
+print(messages)
+for message in messages:
+    if "format" in message and "url" in message and message["format"] == "image" and message["url"] is not None:
+        print("URL", message["url"])
+        print(message["url"] == None)
