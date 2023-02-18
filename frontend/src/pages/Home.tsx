@@ -10,11 +10,14 @@ function Image({message}: { message: any }) {
     return <img src={message.url} height="300px" width="auto"/>;
 }
 
+
+
 export const Home = () => {
     const messages = useQuery("listMessages") || [];
 
     // const data = useQuery("listMessages");
     const sendMessage = useMutation("sendMessage:sendMessage");
+    const createWorksheet = useMutation("sendMessage:createWorksheet");
     const sendHello = () => sendMessage("Hello!", "me2");
 
 
@@ -34,22 +37,27 @@ export const Home = () => {
     //   }
     // }
 
+    async function uploadToStorage(ws: any) {
+      if (!ws) return
+  
+      const postUrl = await generateUploadUrl();
+      const result = await fetch(postUrl, {
+          method: "POST",
+          headers: {"Content-Type": ws.type},
+          body: ws,
+      });
+      const {storageId} = await result.json();
+      console.log("Got", storageId)
+      return storageId;
+  }
+
     // @ts-ignore
     async function handleSendImage(event) {
         event.preventDefault();
-        await Promise.all([answerKey, blankWorksheet].map(async (ws) => {
-            if (!ws) return
+        const answerKeyWorksheetID = await uploadToStorage(answerKey);
+        const blankWorksheetID = await uploadToStorage(blankWorksheet);
 
-            const postUrl = await generateUploadUrl();
-            const result = await fetch(postUrl, {
-                method: "POST",
-                headers: {"Content-Type": ws.type},
-                body: ws,
-            });
-            const {storageId} = await result.json();
-            console.log("Got", storageId)
-            await sendImage(storageId, name);
-        }))
+        await createWorksheet("worksheet_name", "asx35pHuC8dhWHrhZ-lLzg", "temp_date", answerKeyWorksheetID, blankWorksheetID)
         setBlankWorksheet(null);
         setAnswerKey(null);
     }

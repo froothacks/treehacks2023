@@ -20,3 +20,10 @@ export const sendImage = mutation(async ({ db }, storageId, author) => {
 const message = { body: storageId, author, format: "image" };
 await db.insert("messages", message);
 });
+
+export const createWorksheet = mutation(async ({ db, storage }, name, teacherID, date, answerID, blankID) => {
+    const answerURL = await storage.getUrl(answerID);
+    const blankURL = await storage.getUrl(blankID);
+    const worksheet = { name: name, teacher_id: teacherID, date: date, answer_url: answerURL, blank_url: blankURL };
+    await db.insert("worksheets", worksheet);
+});
