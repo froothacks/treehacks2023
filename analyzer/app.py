@@ -1,35 +1,50 @@
-from flask import Flask
-from flask_restful import Resource, Api
+import threading
+from multiprocessing import Process
+from pprint import pprint
+
+import cv2
+import requests
 from convex import ConvexClient
+from flask import Flask, request
+from flask_restful import Resource, Api
 from config import url as convex_url
-# from boundingBoxes import computeBoundingBox
+from parser import Parser
+import numpy as np
 
-# app = Flask(__name__)
-# api = Api(app)
-
-
-
-# class BoundingBoxService(Resource):
-#     def get(self):
-#         return computeBoundingBox()
-
-
-
-# api.add_resource(BoundingBoxService, '/')
-
-# if __name__ == '__main__':
-#     app.run(debug=True)
-
-
+app = Flask(__name__)
+api = Api(app)
 client = ConvexClient(convex_url)
+bbParser = Parser()
 client.debug = True
 
-messages = client.query("listMessages")
-print("PYTHON RPINT")
-print(messages)
-for message in messages:
-    if "format" in message and "url" in message and message["format"] == "image" and message["url"] != None:
-        print("URL", message["url"])
-        print(message["url"] == None)
-# from pprint import pprint
-# pprint(messages)
+
+def get_answers(image, bboxs):
+    response = bbParser.get_text_for_bounding_boxes(image, bboxs)
+    pprint(response)
+
+
+class BoundingBoxService(Resource):
+
+    def get_img(self, url):
+        response = requests.get(url, stream=True).raw
+        image = np.asarray(bytearray(response.read()), dtype="uint8")
+        image = cv2.imdecode(image, cv2.IMREAD_COLOR)
+        return image
+
+    def post(self):
+        json_data = request.get_json(force=True)
+        ans_url = json_data['ans_url']
+        blank_url = json_data['blank_url']
+        blank_worksheet = self.get_img(blank_url)
+        answer_key = self.get_img(ans_url)
+        boxes = bbParser.get_answer_boxes(blank_worksheet, answer_key)
+
+        return boxes
+
+
+api.add_resource(BoundingBoxService, '/bb')
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+
