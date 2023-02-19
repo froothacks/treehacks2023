@@ -15,7 +15,6 @@ type BoundingBoxType = {
 function BoundingBox({width, height, x, y, i, setBox, setFocus, focused, intersecting} : BoundingBoxType) {
     return (
         <Rnd
-            className='draggable'
             bounds='parent'
             size={{ width: width, height: height }}
             style={{
