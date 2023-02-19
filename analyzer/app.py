@@ -25,8 +25,7 @@ def get_answers(image, worksheetId, bboxs):
     for i in range(len(bboxs)):
         bboxs[i]["text_answer"] = response[i]
         client.mutation("sendMessage:createBoundingBoxes", {"worksheetID": worksheetId, "box": bboxs[i]})
-    print(worksheetId)
-    client.mutation("sendMessage:updateWorksheetLabelling", {"worksheetID": worksheetId })
+    client.mutation("sendMessage:updateWorksheetLabelling", worksheetId)
 
 
 
@@ -73,8 +72,6 @@ class StartGrading(Resource):
         worksheetId = json_data['worksheetId']
         submissions = client.query("listMessages:getAllSubmissionsForWorksheet", worksheetId)
         boundingboxes = client.query("listMessages:getBB", worksheetId)
-        print(submissions)
-        print(boundingboxes)
 
         submittedFiles = map(lambda x: x['submission_file_url'], submissions)
 

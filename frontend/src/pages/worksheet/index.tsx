@@ -9,18 +9,7 @@ import { WorksheetLabelling } from "./Labelling";
 import { Section } from "src/components/Section";
 import { Button } from "@chakra-ui/react";
 
-const usePollingUpdate = (pollingFunction: () => void, interval: number) => {
-  const [subscription, setSubscription] = useState(null);
-  useEffect(() => {
-    const id = setInterval(pollingFunction, interval);
-    setSubscription(id as any);
-    return () => {
-      if (subscription) {
-        clearInterval(subscription);
-      }
-    };
-  }, []);
-};
+import { useInterval } from "usehooks-ts";
 
 export const Worksheet = () => {
   const params = useParams();
@@ -31,17 +20,15 @@ export const Worksheet = () => {
   );
   const [didUpdateBoundingBoxes, setUpdateBoundingBoxes] = useState(false);
 
-  usePollingUpdate(() => {
-    if (worksheet && worksheet.ocr_done) {
+  useInterval(() => {
+    if (worksheet && worksheet.labelling_done) {
       setUpdateBoundingBoxes(true);
+      console.log({ worksheet });
     }
-  }, 5001);
+  }, 1000);
 
   return (
     <div>
-      <Button onClick={() => setUpdateBoundingBoxes((prev) => !prev)}>
-        Toggle
-      </Button>
       {didUpdateBoundingBoxes ? (
         <WorksheetSubmissions />
       ) : (

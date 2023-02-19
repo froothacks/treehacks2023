@@ -29,6 +29,8 @@ import { useMutation, useQuery } from "src/convex/_generated/react";
 import { useUploadImage } from "src/hooks/api";
 import { AddIcon } from "@chakra-ui/icons";
 import styled from "@emotion/styled";
+import { Section } from "src/components/Section";
+import { useInterval } from "usehooks-ts";
 
 type UploadWorksheetsProps = {
   worksheet_id: string;
@@ -77,8 +79,7 @@ const UploadSubmissionModal: React.FC<UploadWorksheetsProps> = ({
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Create Submission</ModalHeader>
-          <ModalCloseButton />
+          <ModalHeader>Upload Submission</ModalHeader>
           <ModalBody>
             <FormControl>
               <FormLabel>Student ID</FormLabel>
@@ -95,16 +96,15 @@ const UploadSubmissionModal: React.FC<UploadWorksheetsProps> = ({
             </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Button
-              mr={4}
-              disabled={!submissions?.length}
-              onClick={handleCreateSubmission}
-              variant={""}
-            >
-              <Text>Upload Submission</Text>
+            <Button onClick={onClose} mr={4} variant="outline">
+              Close
             </Button>
-
-            <Button onClick={onClose}>Close</Button>
+            <Button
+              disabled={(submissions?.length ?? 0) > 0}
+              onClick={handleCreateSubmission}
+            >
+              <Text>Upload</Text>
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -133,6 +133,8 @@ export const WorksheetSubmissions = () => {
 
   console.log({ worksheet });
 
+  console.log({ submissions });
+
   const startGrading = () => {
     console.log(ws_id);
     fetch("http://localhost:5001/start_grading", {
@@ -143,11 +145,17 @@ export const WorksheetSubmissions = () => {
     });
   };
 
+  useInterval(() => {
+    if (worksheet) {
+      console.log({ worksheet });
+    }
+  }, 1000);
+
   return (
-    <div>
+    <Section>
       <Box display={"flex"} justifyContent="space-between">
         <Heading>Submissions</Heading>
-        <Box>
+        <Box display="flex">
           <Button onClick={onOpen} leftIcon={<AddIcon boxSize={3} />}>
             <Text>Create</Text>
           </Button>
@@ -155,8 +163,9 @@ export const WorksheetSubmissions = () => {
           <Button onClick={startGrading}>Start Grading</Button>
         </Box>
       </Box>
+      <Spacer h={6} />
 
-      <List spacing={3}>
+      <List spacing={4}>
         {submissions.map((sub: any) => {
           const id = sub._id.id;
           const status = sub.ocr_status;
@@ -172,7 +181,7 @@ export const WorksheetSubmissions = () => {
                         <Spinner size={"sm"} />
                       </Box>
                     ) : status === "finished" ? (
-                      <Text>Score: </Text>
+                      <Text>Score: {}</Text>
                     ) : null}
                   </Box>
                 </CardBody>
@@ -186,6 +195,6 @@ export const WorksheetSubmissions = () => {
         onClose={onClose}
         worksheet_id={ws_id}
       />
-    </div>
+    </Section>
   );
 };
