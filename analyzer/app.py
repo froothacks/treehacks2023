@@ -1,16 +1,15 @@
-import threading
-from multiprocessing import Process
 from pprint import pprint
 
 import cv2
-from flask_cors import CORS
+import numpy as np
 import requests
 from convex import ConvexClient
 from flask import Flask, request
+from flask_cors import CORS
 from flask_restful import Resource, Api
+
 from config import url as convex_url
-from parser import Parser
-import numpy as np
+from parser import Parser, show
 
 app = Flask(__name__)
 CORS(app)
@@ -40,13 +39,19 @@ class BoundingBoxService(Resource):
         blank_worksheet = self.get_img(blank_url)
         answer_key = self.get_img(ans_url)
         boxes = bbParser.get_answer_boxes(blank_worksheet, answer_key)
-
         return boxes
 
 
+class AddBoundingBoxesService(Resource):
+    def post(self):
+        json_data = request.get_json(force=True)
+        worksheetId = json_data['worksheetId']
+        boxes = json_data['boundingBoxes']
+        client.mutation("sendMessage:createBoundingBoxes", {"worksheetID": worksheetId, "box": boxes})
+
+
 api.add_resource(BoundingBoxService, '/bb')
+api.add_resource(AddBoundingBoxesService, '/ab')
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
