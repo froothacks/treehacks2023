@@ -33,6 +33,7 @@ function WorksheetLabeller({
   const WIDTH = 1000;
 
   function submit(boxes: Array<BoundingBoxType>, worksheetId: string) {
+    startLabelling();
     fetch("http://localhost:5001/ab", {
       method: "POST",
       body: JSON.stringify({

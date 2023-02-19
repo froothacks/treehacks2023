@@ -167,7 +167,7 @@ export const WorksheetSubmissions = () => {
           return (
             <ListItem key={id}>
               <MotionCard boxShadow="lg" borderRadius={16}>
-                <CardBody>
+                <CardBody onClick={()=>navigate(`${BaseRoute.SUBMISSIONS}/${id}`)}>
                   <Box display={"flex"} justifyContent="space-between">
                     <Text>{sub.name || "Leon F"}</Text>
                     {status === "processing" ? (
