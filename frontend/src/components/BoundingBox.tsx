@@ -10,10 +10,9 @@ type BoundingBoxType = {
     setFocus: Function, 
     focused: boolean, 
     intersecting: boolean,
-    getParentPosition: Function,
 }
 
-function BoundingBox({width, height, x, y, i, setBox, setFocus, focused, intersecting, getParentPosition} : BoundingBoxType) {
+function BoundingBox({width, height, x, y, i, setBox, setFocus, focused, intersecting} : BoundingBoxType) {
     return (
         <Rnd
             className='draggable'
@@ -23,12 +22,12 @@ function BoundingBox({width, height, x, y, i, setBox, setFocus, focused, interse
                 border: intersecting ? "1px solid red" : "1px #282c34 solid",
                 boxShadow: focused ? "0 0 10px #9ecaed" : undefined,
             }}
-            position={{ x: x + (getParentPosition()?.left || 0), y: y + (getParentPosition()?.top || 0) }}
-            onDrag={(_e, d) => { 
-                setBox(i, d.x - (getParentPosition()?.left || 0) * 3, d.y - (getParentPosition()?.top || 0) * 3, width, height)
+            position={{ x: x, y: y }}
+            onDrag={(_e, d) => {
+                setBox(i, d.x, d.y, width, height)
             }}
             onResizeStop={(_e, _direction, ref, _delta, position) => {
-                setBox(i, position.x - (getParentPosition()?.left || 0), position.y - (getParentPosition()?.top || 0), ref.style.width, ref.style.height)
+                setBox(i, position.x, position.y, ref.style.width, ref.style.height)
             }}
             onMouseDown={() => setFocus(i)}
         />

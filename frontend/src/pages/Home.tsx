@@ -13,7 +13,7 @@ function Image({message}: { message: any }) {
 
 
 export const Home = () => {
-    const messages = useQuery("listMessages") || [];
+    const getAllWorksheets = useQuery("listMessages:getAllWorksheets") || [];
 
     // const data = useQuery("listMessages");
     const sendMessage = useMutation("sendMessage:sendMessage");
@@ -56,8 +56,16 @@ export const Home = () => {
         event.preventDefault();
         const answerKeyWorksheetID = await uploadToStorage(answerKey);
         const blankWorksheetID = await uploadToStorage(blankWorksheet);
-
-        await createWorksheet("worksheet_name", "asx35pHuC8dhWHrhZ-lLzg", "temp_date", answerKeyWorksheetID, blankWorksheetID)
+        const {worksheetId, answerURL, blankURL} = await createWorksheet("worksheet_name", "asx35pHuC8dhWHrhZ-lLzg", "temp_date", answerKeyWorksheetID, blankWorksheetID)
+        const boundingBoxes = await fetch("http://127.0.0.1:5000/bb", {
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify({
+                ans_url: answerURL,
+                blank_url: blankURL,
+            })
+        })
+        const data = await boundingBoxes.json()
         setBlankWorksheet(null);
         setAnswerKey(null);
     }
@@ -78,6 +86,15 @@ export const Home = () => {
 
     return (
         <div>
+              <ul>
+            {getAllWorksheets.map((worksheet: any) => (
+                    <li key={worksheet._id.toString()}>
+                      <span>{worksheet.name}:</span>
+                      <Image message={worksheet.answer_url} />
+                      <span>{new Date(worksheet._creationTime).toLocaleTimeString()}</span>
+                    </li>
+                  ))}
+            </ul>
             <h1 className="text-3xl font-bold underline">Hello world!</h1>
             <button onClick={sendHello}>click me!</button>
             <form onSubmit={handleSendImage}>

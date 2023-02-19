@@ -5,12 +5,14 @@ import numpy as np
 import requests
 from convex import ConvexClient
 from flask import Flask, request
+from flask_cors import CORS
 from flask_restful import Resource, Api
 
 from config import url as convex_url
 from parser import Parser
 
 app = Flask(__name__)
+CORS(app)
 api = Api(app)
 client = ConvexClient(convex_url)
 bbParser = Parser()

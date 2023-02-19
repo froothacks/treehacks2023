@@ -6,6 +6,7 @@ import {
   OrderedList,
   UnorderedList,
   Link,
+  Box,
 } from "@chakra-ui/react";
 
 import { Card, CardHeader, CardBody, CardFooter, Text } from "@chakra-ui/react";
@@ -23,7 +24,9 @@ export const Worksheet = () => {
   return (
     <Section>
       <div className="Worksheet">
-      <WorksheetLabeller />
+        <Box pb={8}>
+          <WorksheetLabeller />
+        </Box>
 
         <List spacing={3}>
           {Array.from(Array(30).keys()).map((id) => (
