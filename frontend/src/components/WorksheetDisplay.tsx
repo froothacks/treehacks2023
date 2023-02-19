@@ -49,8 +49,8 @@ function WorksheetDisplay({ submission}:
                         width={`${parseInt(box.width) * ratio}`}
                         height={`${parseInt(box.height) * ratio}`}
                         i={i}
-                        x={box.x * ratio}
-                        y={box.y * ratio}
+                        x={Number(box.x) * ratio}
+                        y={Number(box.y) * ratio}
                         setBox={() => {}}
                         setFocus={() => {}}
                         intersecting={false}
