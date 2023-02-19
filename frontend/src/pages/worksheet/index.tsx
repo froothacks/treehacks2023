@@ -6,6 +6,7 @@ import { BaseRoute, QueryParams } from "src/constants/routes";
 import { useMutation, useQuery } from "src/convex/_generated/react";
 import { WorksheetSubmissions } from "./Submissions";
 import { WorksheetLabelling } from "./Labelling";
+import { Section } from "src/components/Section";
 
 const usePollingUpdate = (pollingFunction: () => void, interval: number) => {
   const [subscription, setSubscription] = useState(null);
@@ -37,9 +38,13 @@ export const Worksheet = () => {
     }
   }, 5000);
 
-  return didUpdateBoundingBoxes || true ? (
-    <WorksheetSubmissions />
-  ) : (
-    <WorksheetLabelling />
+  return (
+    <Section>
+      {didUpdateBoundingBoxes || true ? (
+        <WorksheetSubmissions />
+      ) : (
+        <WorksheetLabelling />
+      )}
+    </Section>
   );
 };
