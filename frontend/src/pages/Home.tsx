@@ -11,7 +11,7 @@ function Image({ message }: { message: any }) {
 }
 
 export const Home = () => {
-  const messages = useQuery("listMessages") ?? [];
+  const getAllWorksheets = useQuery("listMessages:getAllWorksheets") || [];
 
   // const data = useQuery("listMessages");
   const sendMessage = useMutation("sendMessage:sendMessage");
@@ -73,8 +73,33 @@ export const Home = () => {
     setAnswerKey(null);
   }
 
+  // <ul>
+  // {messages.map((message: any) => (
+  //          <li key={message._id.toString()}>
+  //            <span>{message.author}:</span>
+  //            {message.format === "image" ? (
+  //              <Image message={message} />
+  //            ) : (
+  //              <span>{message.body}</span>
+  //            )}
+  //            <span>{new Date(message._creationTime).toLocaleTimeString()}</span>
+  //          </li>
+  //        ))}
+  // </ul>
+
   return (
     <div>
+      <ul>
+        {getAllWorksheets.map((worksheet: any) => (
+          <li key={worksheet._id.toString()}>
+            <span>{worksheet.name}:</span>
+            <Image message={worksheet.answer_url} />
+            <span>
+              {new Date(worksheet._creationTime).toLocaleTimeString()}
+            </span>
+          </li>
+        ))}
+      </ul>
       <h1 className="text-3xl font-bold underline">Hello world!</h1>
       <button onClick={sendHello}>click me!</button>
       <form onSubmit={handleSendImage}>
@@ -106,6 +131,4 @@ export const Home = () => {
       </form>
     </div>
   );
-  setBlankWorksheet(null);
-  setAnswerKey(null);
 };

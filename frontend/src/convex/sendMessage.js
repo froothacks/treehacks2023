@@ -24,7 +24,16 @@ await db.insert("messages", message);
 export const createWorksheet = mutation(async ({ db, storage }, name, teacherID, date, answerID, blankID) => {
     const answerURL = await storage.getUrl(answerID);
     const blankURL = await storage.getUrl(blankID);
-    const worksheet = { name: name, teacher_id: teacherID, date: date, answer_url: answerURL, blank_url: blankURL };
+    const worksheet = { name: name, ocr_done: false, teacher_id: teacherID, date: date, answer_url: answerURL, blank_url: blankURL };
     const worksheetId = await db.insert("worksheets", worksheet);
     return {worksheetId: worksheetId.id, answerURL, blankURL}
 });
+
+export const createSubmission = mutation(async ({ db, storage }, worksheetID, submissionFileID) => {
+    // const answerURL = await storage.getUrl(answerID);
+    const submissionFileURL = await storage.getUrl(submissionFileID);
+    const submission = { worksheet_id: worksheetID,  submission_file_url: submissionFileURL};
+    const submissionId = await db.insert("submissions", submission);
+    return {submissionId: submissionId.id, submissionFileURL}
+});
+
