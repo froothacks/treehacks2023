@@ -111,6 +111,7 @@ const UploadWorksheetsModal: React.FC<UploadWorksheetsProps> = ({
                 type="file"
                 accept="image/*"
                 ref={imageInput}
+                p={1}
                 onChange={(event) => setBlankWorksheet(event.target.files?.[0])}
                 className="ms-2 btn btn-primary"
               />
@@ -120,6 +121,7 @@ const UploadWorksheetsModal: React.FC<UploadWorksheetsProps> = ({
               <Input
                 type="file"
                 accept="image/*"
+                p={1}
                 ref={imageInput}
                 onChange={(event) => setAnswerKey(event.target.files?.[0])}
                 className="ms-2 btn btn-primary"
