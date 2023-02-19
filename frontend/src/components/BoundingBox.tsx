@@ -11,9 +11,10 @@ type BoundingBoxType = {
     focused: boolean, 
     intersecting: boolean,
     getParentPosition: Function,
+    deleteIfDeleteMode: Function,
 }
 
-function BoundingBox({width, height, x, y, i, setBox, setFocus, focused, intersecting, getParentPosition} : BoundingBoxType) {
+function BoundingBox({width, height, x, y, i, setBox, setFocus, focused, intersecting, getParentPosition, deleteIfDeleteMode} : BoundingBoxType) {
     return (
         <Rnd
             bounds='parent'
@@ -30,7 +31,11 @@ function BoundingBox({width, height, x, y, i, setBox, setFocus, focused, interse
             onResizeStop={(_e, _direction, ref, _delta, position) => {
                 setBox(i, position.x, position.y, ref.style.width, ref.style.height)
             }}
-            onMouseDown={() => setFocus(i)}
+            onMouseDown={() => {
+                    deleteIfDeleteMode(i)
+                    setFocus(i)
+                }
+            }
         />
     );
 }

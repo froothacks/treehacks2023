@@ -22,6 +22,7 @@ function WorksheetLabeller({boxesInput, ansURL, worksheetId}: { boxesInput: Arra
     const [boxes, setBoxes] = useState<Array<BoundingBoxType>>(boxesInput)
     const [focus, setFocus] = useState<number | null>(null)
     const [ratio, setRatio] = useState<number | null>(null)
+    const [deleteMode, setDeleteMode] = useState<boolean>(false)
     const ref = useRef<HTMLDivElement>(null)
     const WIDTH = 1000
 
@@ -54,7 +55,16 @@ function WorksheetLabeller({boxesInput, ansURL, worksheetId}: { boxesInput: Arra
     function deleteAll() {
       setBoxes([])
       setFocus(null)
-  }
+    }
+
+    function deleteIfDeleteMode(i: number){
+      if(deleteMode){
+        setBoxes(
+          boxes.filter((_, idx) => idx !== i)
+        )
+        setFocus(null)
+      }
+    }
 
     function getParentPosition() {
         return ref?.current?.getBoundingClientRect()
@@ -106,6 +116,7 @@ function WorksheetLabeller({boxesInput, ansURL, worksheetId}: { boxesInput: Arra
                         focused={focus === i}
                         intersecting={checkIntersecting(i)}
                         getParentPosition={getParentPosition}
+                        deleteIfDeleteMode={deleteIfDeleteMode}
                     />
                 })}
             </div>
@@ -113,6 +124,7 @@ function WorksheetLabeller({boxesInput, ansURL, worksheetId}: { boxesInput: Arra
               <Button onClick={addBox}>Add Box</Button>
               <Button onClick={deleteBox}>Delete</Button>
               <Button onClick={deleteAll}>Delete All</Button>
+              <Button onClick={() => setDeleteMode(!deleteMode)} colorScheme={deleteMode ? "red" : "gray"}>Delete Mode</Button>
               <Button onClick={() => submit(boxes, worksheetId)}>Accept</Button>
             </ButtonGroup>
         </div> : <Spinner/>}
