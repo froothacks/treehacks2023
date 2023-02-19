@@ -82,7 +82,7 @@ const UploadSubmissionModal: React.FC<UploadWorksheetsProps> = ({
           <ModalHeader>Upload Submission</ModalHeader>
           <ModalBody>
             <FormControl>
-              <FormLabel>Student ID</FormLabel>
+              <FormLabel>Student Name</FormLabel>
               <Input value={name} onChange={(e) => setName(e.target.value)} />
               <Spacer h={8} />
               <FormLabel>Upload student's submission</FormLabel>
@@ -170,7 +170,7 @@ export const WorksheetSubmissions = () => {
               <MotionCard key={id} boxShadow="lg" borderRadius={16}>
                 <CardBody>
                   <Box display={"flex"} justifyContent="space-between">
-                    <Text>Advait's Submission</Text>
+                    <Text>{sub.name || "Leon F"}</Text>
                     {status === "processing" ? (
                       <Box display={"flex"} alignItems="center">
                         <Text mr="3">Grading</Text>
