@@ -21,6 +21,7 @@ function BoundingBox({width, height, x, y, i, setBox, setFocus, focused, interse
             style={{
                 border: intersecting ? "1px solid red" : "1px #282c34 solid",
                 boxShadow: focused ? "0 0 10px #9ecaed" : undefined,
+                backgroundColor: "rgba(100, 99, 75, 0.2)",
             }}
             position={{ x: x, y: y }}
             onDrag={(_e, d) => {

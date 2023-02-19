@@ -38,7 +38,7 @@ export const Worksheet = () => {
   }, 5000);
 
   return (
-    <Section>
+    <div>
       <Button onClick={() => setUpdateBoundingBoxes((prev) => !prev)}>
         Toggle
       </Button>
@@ -47,6 +47,6 @@ export const Worksheet = () => {
       ) : (
         <WorksheetLabelling />
       )}
-    </Section>
+    </div>
   );
 };

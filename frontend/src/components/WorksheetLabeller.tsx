@@ -1,6 +1,6 @@
 import {useState, useRef, useEffect} from "react"
 import BoundingBox from "./BoundingBox"
-import {Image as ChakraImage, Spinner} from '@chakra-ui/react'
+import {Image as ChakraImage, Spinner, Button, ButtonGroup} from '@chakra-ui/react'
 
 export interface BoundingBoxType {
     height: string,
@@ -51,6 +51,11 @@ function WorksheetLabeller({boxesInput, ansURL, worksheetId}: { boxesInput: Arra
         setFocus(null)
     }
 
+    function deleteAll() {
+      setBoxes([])
+      setFocus(null)
+  }
+
     function getParentPosition() {
         return ref?.current?.getBoundingClientRect()
     }
@@ -89,8 +94,6 @@ function WorksheetLabeller({boxesInput, ansURL, worksheetId}: { boxesInput: Arra
             <div ref={ref} className='container' style={{border: "1px black solid", width:"1000px"}}>
                 <img src={ansURL} width="1000px"/>
                 {boxes.map((box, i) => {
-                    console.log(box.width)
-                    console.log(`${parseInt(box.width) * ratio}`)
                     return <BoundingBox
                         key={i}
                         width={`${parseInt(box.width) * ratio}`}
@@ -106,9 +109,12 @@ function WorksheetLabeller({boxesInput, ansURL, worksheetId}: { boxesInput: Arra
                     />
                 })}
             </div>
-            <button onClick={addBox}>Add Box</button>
-            <button onClick={deleteBox}>Delete</button>
-            <button onClick={() => submit(boxes, worksheetId)}>Accept</button>
+            <ButtonGroup gap='4' m="4">
+              <Button onClick={addBox}>Add Box</Button>
+              <Button onClick={deleteBox}>Delete</Button>
+              <Button onClick={deleteAll}>Delete All</Button>
+              <Button onClick={() => submit(boxes, worksheetId)}>Accept</Button>
+            </ButtonGroup>
         </div> : <Spinner/>}
     </div>
 }
