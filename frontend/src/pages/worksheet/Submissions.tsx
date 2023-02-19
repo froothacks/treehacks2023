@@ -145,8 +145,6 @@ export const WorksheetSubmissions = () => {
     });
   };
 
-  console.log(worksheet.totalScore.toString())
-
   return (
     <Section>
       <Box display={"flex"} justifyContent="space-between">
@@ -177,7 +175,10 @@ export const WorksheetSubmissions = () => {
                         <Spinner size={"sm"} />
                       </Box>
                     ) : status === "finished" ? (
-                      <Text>Score: {sub.totalScore.toString()} / {worksheet.totalScore.toString()}</Text>
+                      <Text>
+                        Score: {sub.totalScore.toString()} /{" "}
+                        {worksheet.totalScore.toString()}
+                      </Text>
                     ) : null}
                   </Box>
                 </CardBody>

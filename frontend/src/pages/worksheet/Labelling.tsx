@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Box, SkeletonText, Spinner } from "@chakra-ui/react";
+import { Box, Heading, SkeletonText, Spinner } from "@chakra-ui/react";
 import WorksheetLabeller, {
   BoundingBoxType,
 } from "src/components/WorksheetLabeller";
@@ -9,6 +9,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { BaseRoute, QueryParams } from "src/constants/routes";
 import { useQuery } from "src/convex/_generated/react";
 import { Section } from "src/components/Section";
+import Lottie from "react-lottie-player";
+import animation from "src/static/animation.json";
 
 type WorksheetLabellingProps = {
   startLabelling: () => void;
@@ -53,10 +55,21 @@ export const WorksheetLabelling: React.FC<WorksheetLabellingProps> = ({
       />
     </Box>
   ) : (
-    <Section>
-      <Box padding="6" boxShadow="2xl" bg="white">
-        <SkeletonText mt="4" noOfLines={16} spacing="8" skeletonHeight="4" />
-      </Box>
-    </Section>
+    <Box
+      display="flex"
+      flexDirection="column"
+      justifyContent={"center"}
+      alignItems="center"
+    >
+      <Lottie
+        loop
+        animationData={animation}
+        play
+        style={{ width: 600, height: 600 }}
+      />
+      <Heading as="h2" fontSize={20}>
+        Parsing images and loading labels...
+      </Heading>
+    </Box>
   );
 };
