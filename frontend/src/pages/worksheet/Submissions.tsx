@@ -42,23 +42,31 @@ const UploadSubmissionModal: React.FC<UploadWorksheetsProps> = ({
 
   const imageInput = useRef(null);
   const [name, setName] = useState("");
-  const [submission, setSubmission] = useState<File>();
+  const [submissions, setSubmissions] = useState<FileList | null>(null);
 
   const handleCreateSubmission = async () => {
-    const submissionImageID = await uploadImage(submission);
+    if (submissions) {
+      const res = await Promise.all(
+        Array.from(submissions).map(async (sub) => {
+          const submissionImageID = await uploadImage(sub);
 
-    const { submissionId } = await createSubmission(
-      worksheet_id,
-      submissionImageID
-    );
+          const { submissionId } = await createSubmission(
+            worksheet_id,
+            submissionImageID
+          );
+          return submissionId;
+        })
+      );
 
-    // cleanup
-    setSubmission(undefined);
+      // cleanup
+      setSubmissions(null);
 
-    onClose();
-    navigate(`${BaseRoute.SUBMISSIONS}/${submissionId}`);
+      onClose();
+      if (res.length == 1) {
+        navigate(`${BaseRoute.SUBMISSIONS}/${res[0]}`);
+      }
+    }
   };
-
   return (
     <>
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
@@ -76,7 +84,7 @@ const UploadSubmissionModal: React.FC<UploadWorksheetsProps> = ({
                 type="file"
                 accept="image/*"
                 ref={imageInput}
-                onChange={(event) => setSubmission(event.target.files?.[0])}
+                onChange={(event) => setSubmissions(event.target.files)}
                 className="ms-2 btn btn-primary"
               />
             </FormControl>
@@ -84,7 +92,7 @@ const UploadSubmissionModal: React.FC<UploadWorksheetsProps> = ({
           <ModalFooter>
             <Button
               mr={4}
-              disabled={!submission}
+              disabled={!submissions?.length}
               onClick={handleCreateSubmission}
               variant={""}
             >
@@ -108,14 +116,27 @@ export const WorksheetSubmissions = () => {
     new Id("worksheets", ws_id)
   );
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const submissions = useQuery("listMessages:getAllSubmissions") ?? [];
+  const submissions =
+    useQuery("listMessages:getAllSubmissionsForWorksheet", ws_id) ?? [];
 
   console.log({ worksheet });
+
+  const startGrading = () => {
+    console.log(ws_id);
+    fetch("http://localhost:5000/start_grading", {
+      method: "POST",
+      body: JSON.stringify({
+        worksheetId: ws_id,
+      }),
+    });
+  };
 
   return (
     <div>
       <Button onClick={onOpen}>Add submission</Button>
-    
+      <Spacer w={4} />
+      <Button onClick={startGrading}>Start Grading</Button>
+
       <List spacing={3}>
         {submissions.map((sub: any) => {
           const id = sub._id.id;
