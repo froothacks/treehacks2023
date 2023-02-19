@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import {
   List,
   ListItem,
@@ -6,6 +6,8 @@ import {
   OrderedList,
   UnorderedList,
   Link,
+  useDisclosure,
+  Button,
 } from "@chakra-ui/react";
 
 import { Card, CardHeader, CardBody, CardFooter, Text } from "@chakra-ui/react";
@@ -23,7 +25,7 @@ export const Worksheet = () => {
   return (
     <Section>
       <div className="Worksheet">
-      <WorksheetLabeller />
+        <WorksheetLabeller />
 
         <List spacing={3}>
           {Array.from(Array(30).keys()).map((id) => (
