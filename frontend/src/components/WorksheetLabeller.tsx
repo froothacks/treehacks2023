@@ -1,15 +1,15 @@
 import { useState, useRef } from "react"
 import BoundingBox from "./BoundingBox"
 
-interface BoundingBoxType {
+export interface BoundingBoxType {
     height: string,
     width: string,
     x: number,
     y: number,
 }
 
-function WorksheetLabeller() {
-  const [boxes, setBoxes] = useState<Array<BoundingBoxType>>([])
+function WorksheetLabeller({boxesInput} : {boxesInput: Array<BoundingBoxType>}) {
+  const [boxes, setBoxes] = useState<Array<BoundingBoxType>>(boxesInput)
   const [focus, setFocus] = useState<number | null>(null)
   const ref = useRef<HTMLDivElement>(null)
 

@@ -1,4 +1,5 @@
 import { mutation } from "./_generated/server";
+import { query } from "./_generated/server";
 
 // export default mutation(async ({ db }, body, author) => {
 //   const message = { body: body, author: author, test1: "test2" };
@@ -26,7 +27,7 @@ export const createWorksheet = mutation(async ({ db, storage }, name, teacherID,
     const blankURL = await storage.getUrl(blankID);
     const worksheet = { name: name, ocr_done: false, teacher_id: teacherID, date: date, answer_url: answerURL, blank_url: blankURL };
     const worksheetId = await db.insert("worksheets", worksheet);
-    return {worksheetId: worksheetId.id, answerURL, blankURL}
+    return worksheetId
 });
 
 export const createSubmission = mutation(async ({ db, storage }, worksheetID, submissionFileID) => {

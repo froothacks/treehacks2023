@@ -4,7 +4,7 @@ import {useRef, useState} from "react";
 import { Section } from "src/components/Section";
 import { Link } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { BaseRoute } from "src/constants/routes";
+import { RouteName } from "src/constants/routes";
 
 function Image({message}: { message: any }) {
     return <img src={message.url} height="300px" width="auto"/>;
@@ -14,6 +14,8 @@ function Image({message}: { message: any }) {
 
 export const Home = () => {
     const getAllWorksheets = useQuery("listMessages:getAllWorksheets") || [];
+    const messages = useQuery("listMessages") || [];
+    const navigate = useNavigate();
 
     // const data = useQuery("listMessages");
     const sendMessage = useMutation("sendMessage:sendMessage");
@@ -56,18 +58,8 @@ export const Home = () => {
         event.preventDefault();
         const answerKeyWorksheetID = await uploadToStorage(answerKey);
         const blankWorksheetID = await uploadToStorage(blankWorksheet);
-        const {worksheetId, answerURL, blankURL} = await createWorksheet("worksheet_name", "asx35pHuC8dhWHrhZ-lLzg", "temp_date", answerKeyWorksheetID, blankWorksheetID)
-        const boundingBoxes = await fetch("http://127.0.0.1:5000/bb", {
-            method: 'POST',
-            mode: 'cors',
-            body: JSON.stringify({
-                ans_url: answerURL,
-                blank_url: blankURL,
-            })
-        })
-        const data = await boundingBoxes.json()
-        setBlankWorksheet(null);
-        setAnswerKey(null);
+        const worksheetId = await createWorksheet("worksheet_name", "asx35pHuC8dhWHrhZ-lLzg", "temp_date", answerKeyWorksheetID, blankWorksheetID)
+        navigate(`${RouteName.WORKSHEET}/${worksheetId}`)
     }
 
     // <ul>
