@@ -16,12 +16,19 @@ import { useNavigate, useParams } from "react-router-dom";
 import { BaseRoute, QueryParams } from "src/constants/routes";
 import { Section } from "src/components/Section";
 import WorksheetLabeller from "src/components/WorksheetLabeller";
+import { useQuery } from "src/convex/_generated/react";
+import { Id } from "src/convex/_generated/dataModel";
 
 export const Worksheet = () => {
   const params = useParams();
   const navigate = useNavigate();
+  const ws_id = params[QueryParams.WORKSHEET_ID];
+  const worksheet = useQuery(
+    "listMessages:getWorksheet",
+    new Id("worksheets", ws_id ?? "")
+  );
 
-  console.log({ ws_id: params[QueryParams.WORKSHEET_ID] });
+  console.log({ worksheet });
 
   const [didUpdateBoundingBoxes, setUpdateBoundingBoxes] = useState(false);
 
@@ -29,6 +36,7 @@ export const Worksheet = () => {
 
   return (
     <Section>
+      {worksheet && <Text>ID: {worksheet._id.id}</Text>}
       <Button onClick={() => setUpdateBoundingBoxes((prev) => !prev)}>
         Toggle boolean
       </Button>

@@ -29,7 +29,7 @@ import { useNavigate } from "react-router";
 import { BaseRoute } from "src/constants/routes";
 
 import { useUploadImage } from "src/hooks/api";
-import { useMutation } from "src/convex/_generated/react";
+import { useMutation, useQuery } from "src/convex/_generated/react";
 
 type UploadWorksheetsProps = {
   onClose: () => void;
@@ -41,6 +41,7 @@ const UploadWorksheetsModal: React.FC<UploadWorksheetsProps> = ({
   onClose,
 }) => {
   const uploadImage = useUploadImage();
+  const navigate = useNavigate();
   const createWorksheet = useMutation("sendMessage:createWorksheet");
 
   const imageInput = useRef(null);
@@ -52,19 +53,37 @@ const UploadWorksheetsModal: React.FC<UploadWorksheetsProps> = ({
     const answerKeyWorksheetID = await uploadImage(answerKey);
     const blankWorksheetID = await uploadImage(blankWorksheet);
 
-    await createWorksheet(
+    const { worksheetId, answerURL, blankURL } = await createWorksheet(
       name,
       "asx35pHuC8dhWHrhZ-lLzg",
       "temp_date",
       answerKeyWorksheetID,
       blankWorksheetID
     );
+    const boundingBoxes = await fetch(
+      "https://agile-mole-403.convex.cloud/bb",
+      {
+        method: "POST",
+        mode: "cors",
+        body: JSON.stringify({
+          ans_url: answerURL,
+          blank_url: blankURL,
+        }),
+      }
+    );
+
+    console.log({ boundingBoxes });
+
+    const data = await boundingBoxes.json();
+
+    console.log({ data });
 
     // cleanup
     setAnswerKey(undefined);
     setBlankWorksheet(undefined);
 
     onClose();
+    navigate(`${BaseRoute.WORKSHEETS}/${worksheetId}`);
   };
 
   return (
@@ -120,53 +139,41 @@ const UploadWorksheetsModal: React.FC<UploadWorksheetsProps> = ({
 };
 export const Worksheets = () => {
   const navigate = useNavigate();
+
+  const worksheets = useQuery("listMessages:getAllWorksheets") ?? [];
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [state, setState] = useState<"uploading" | "labelling" | "done">();
 
   const handleUploadWorksheet = () => {
     onOpen();
-    setState("uploading");
   };
+
+  console.log({ worksheets });
 
   return (
     <div className="Worksheets">
       <Section>
-        <Button onClick={handleUploadWorksheet}>Add worksheet</Button>
-
-        {state === "labelling" && (
-          <List spacing={6}>
-            {Array.from(Array(30).keys()).map((id) => (
-              <ListItem>
+        <Button onClick={handleUploadWorksheet}>Create worksheet</Button>
+        <Spacer h={6} />
+        <List spacing={6}>
+          {worksheets.map((ws: any) => {
+            const id = ws._id.id;
+            return (
+              <ListItem key={id}>
                 <Card>
                   <Link
                     onClick={() => navigate(`${BaseRoute.WORKSHEETS}/${id}`)}
                   >
                     <CardBody>
-                      <Text>{`Worksheet ${id}`}</Text>
+                      <Text>
+                        {ws.name} | {id}
+                      </Text>
                     </CardBody>
                   </Link>
                 </Card>
               </ListItem>
-            ))}
-          </List>
-        )}
-        {state === "done" && (
-          <List spacing={6}>
-            {Array.from(Array(30).keys()).map((id) => (
-              <ListItem>
-                <Card>
-                  <Link
-                    onClick={() => navigate(`${BaseRoute.WORKSHEETS}/${id}`)}
-                  >
-                    <CardBody>
-                      <Text>{`Worksheet ${id}`}</Text>
-                    </CardBody>
-                  </Link>
-                </Card>
-              </ListItem>
-            ))}
-          </List>
-        )}
+            );
+          })}
+        </List>
       </Section>
       <UploadWorksheetsModal isOpen={isOpen} onClose={onClose} />
     </div>
