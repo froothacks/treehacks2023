@@ -6,7 +6,7 @@ from transformers import TrOCRProcessor, VisionEncoderDecoderModel
 from features import FeatureExtraction, feature_matching
 
 
-def __show(boxes, image):
+def show(boxes, image):
     for i in boxes:
         x, y, h, w = i["x"], i["y"], i["height"], i["width"]
         cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 255), 2)
@@ -38,7 +38,6 @@ class Parser:
         return cv2.resize(image, dim, interpolation=inter)
 
     def get_answer_boxes(self, empty_ws, fill_ws):
-
         # Outputs
         boxes = []
 
@@ -64,7 +63,7 @@ class Parser:
         # Draw the contours on the original image
         for contour in contours:
             x, y, w, h = cv2.boundingRect(contour)
-            if 10000 < w * h < 100000 and w > 50 and h > 50:
+            if w > 10 and h > 10:
                 print(w, h, w * h)
                 boxes.append({
                     "width": w,
@@ -72,7 +71,6 @@ class Parser:
                     "x": x,
                     "y": y,
                 })
-
         return boxes
 
     def nm(self, im0_gray, im1_gray):
