@@ -25,5 +25,6 @@ export const createWorksheet = mutation(async ({ db, storage }, name, teacherID,
     const answerURL = await storage.getUrl(answerID);
     const blankURL = await storage.getUrl(blankID);
     const worksheet = { name: name, teacher_id: teacherID, date: date, answer_url: answerURL, blank_url: blankURL };
-    await db.insert("worksheets", worksheet);
+    const worksheetId = await db.insert("worksheets", worksheet);
+    return {worksheetId: worksheetId.id, answerURL, blankURL}
 });

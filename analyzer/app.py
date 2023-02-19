@@ -3,6 +3,7 @@ from multiprocessing import Process
 from pprint import pprint
 
 import cv2
+from flask_cors import CORS
 import requests
 from convex import ConvexClient
 from flask import Flask, request
@@ -12,6 +13,7 @@ from parser import Parser
 import numpy as np
 
 app = Flask(__name__)
+CORS(app)
 api = Api(app)
 client = ConvexClient(convex_url)
 bbParser = Parser()

@@ -51,7 +51,7 @@ function WorksheetLabeller() {
   }
 
   return (
-    <div style={{padding: "20px", height: "600px", width: "600px"}}>
+    <div style={{height: "600px", width: "600px"}}>
         <div ref={ref} className='container' style={{height: "100%", border: "1px black solid"}}>
             {boxes.map((box, i) =>
                 <BoundingBox 
@@ -65,7 +65,6 @@ function WorksheetLabeller() {
                   setFocus={setFocus} 
                   focused={focus === i} 
                   intersecting={checkIntersecting(i)}
-                  getParentPosition={getParentPosition}
                 />
             )}
         </div>

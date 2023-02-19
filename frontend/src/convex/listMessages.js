@@ -7,12 +7,12 @@ export default query(async ({ db, storage }) => {
       message.url = await storage.getUrl(message.body);
     }
   }
-  console.log("MESSAGES FORMAT", messages);
+  // console.log("MESSAGES FORMAT", messages);
 
   const messagesJSON = {}
   messages.forEach((message, index) => {
     messagesJSON[index] = message;
   });
-  console.log("JSONN", messagesJSON);
+  // console.log("JSONN", messagesJSON);
   return messages;
 });
