@@ -1,5 +1,6 @@
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import BoundingBox from "./BoundingBox"
+import { Image as ChakraImage, Spinner } from '@chakra-ui/react'
 
 export interface BoundingBoxType {
     height: string,
@@ -8,10 +9,24 @@ export interface BoundingBoxType {
     y: number,
 }
 
-function WorksheetLabeller({boxesInput} : {boxesInput: Array<BoundingBoxType>}) {
+function WorksheetLabeller({boxesInput, ansURL} : {boxesInput: Array<BoundingBoxType>, ansURL: string}) {
   const [boxes, setBoxes] = useState<Array<BoundingBoxType>>(boxesInput)
   const [focus, setFocus] = useState<number | null>(null)
+  const [ratio, setRatio] = useState<number | null>(null)
   const ref = useRef<HTMLDivElement>(null)
+  const WIDTH = 1000
+
+  useEffect(() => {
+    getImageDimensions(ansURL)
+  })
+
+  const getImageDimensions = (src : string) => {
+    var img = new (Image as any)();
+    img.onload = function() {
+      setRatio(WIDTH/img.naturalWidth)
+    }
+    img.src = src
+  }
 
   function addBox(){
     setBoxes(
@@ -31,9 +46,18 @@ function WorksheetLabeller({boxesInput} : {boxesInput: Array<BoundingBoxType>}) 
   }
 
   function setBox(index: number, x: number, y: number, width: string, height: string){
-    setBoxes(
-      boxes.slice(0, index).concat([{height, width, x, y}]).concat(boxes.slice(index + 1))
-    )
+    if(ratio){
+      setBoxes(
+        boxes.slice(0, index)
+        .concat([{
+          height: (parseInt(height)/ratio).toString(), 
+          width: (parseInt(width)/ratio).toString(), 
+          x: x/ratio, 
+          y: y/ratio,
+        }])
+        .concat(boxes.slice(index + 1))
+      )
+    }
   }
 
   function checkIntersecting(index: number){
@@ -50,28 +74,33 @@ function WorksheetLabeller({boxesInput} : {boxesInput: Array<BoundingBoxType>}) 
     && (boxes[j].x + parseInt(boxes[j].width) > boxes[i].x) && (boxes[j].y + parseInt(boxes[j].height) > boxes[i].y)
   }
 
-  return (
-    <div style={{height: "600px", width: "600px"}}>
-        <div ref={ref} className='container' style={{height: "100%", border: "1px black solid"}}>
-            {boxes.map((box, i) =>
-                <BoundingBox 
-                  key={i} 
-                  width={box.width} 
-                  height={box.height} 
-                  x={box.x} 
-                  y={box.y} 
-                  i={i} 
-                  setBox={setBox} 
-                  setFocus={setFocus} 
-                  focused={focus === i} 
-                  intersecting={checkIntersecting(i)}
-                />
-            )}
-        </div>
-        <button onClick={addBox}>Add Box</button>
-        <button onClick={deleteBox}>Delete</button>
-    </div>
-    );
+  return <div>
+    {ratio ? 
+    <div>
+      <div ref={ref} className='container' style={{border: "1px black solid", width: "1000px"}}>
+          <ChakraImage src={ansURL} width="1000px"/>
+          {boxes.map((box, i) => {
+            // console.log(box.width)
+            // console.log(`${parseInt(box.width) * ratio}`)
+              return <BoundingBox 
+                key={i} 
+                width={`${parseInt(box.width) * ratio}`} 
+                height={`${parseInt(box.height) * ratio}`}
+                x={box.x * ratio} 
+                y={box.y * ratio} 
+                i={i} 
+                setBox={setBox} 
+                setFocus={setFocus} 
+                focused={focus === i} 
+                intersecting={checkIntersecting(i)}
+                ratio={ratio}
+              />
+          })}
+      </div>
+      <button onClick={addBox}>Add Box</button>
+      <button onClick={deleteBox}>Delete</button>
+    </div> : <Spinner />}
+  </div>
 }
 
 export default WorksheetLabeller

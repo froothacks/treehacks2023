@@ -41,9 +41,3 @@ export const getAllSubmissions = query(async ({ db, storage }) => {
 export const getSubmission = query(async ({ db }, submissionID) => {
     return await db.get(submissionID);
 });
-
-export const getWorksheetURLs = query(async ({ db }, worksheetId) => {
-  const worksheet = await db.get(worksheetId)
-  return {answerURL: worksheet.answer_url, blankURL: worksheet.blank_url}
-});
-

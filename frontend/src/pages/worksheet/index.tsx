@@ -123,15 +123,16 @@ export const Worksheet = () => {
             method: 'POST',
             mode: 'cors',
             body: JSON.stringify({
-                ans_url: worksheet.answerURL,
-                blank_url: worksheet.blankURL,
+                ans_url: worksheet.answer_url,
+                blank_url: worksheet.blank_url,
             })
         })
         const data = await boundingBoxes.json()
         setBoxes(data)
     }
-    getBoundingBoxes()
-  }, [])
+    if(worksheet?.answer_url && worksheet?.blank_url) getBoundingBoxes()
+  }, [worksheet])
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const submissions = useQuery("listMessages:getAllSubmissions") ?? [];
 
@@ -179,7 +180,7 @@ export const Worksheet = () => {
             />
           </div>
         ) : boxes ? <Box pb={8}>
-        <WorksheetLabeller boxesInput={boxes}/>
+          <WorksheetLabeller boxesInput={boxes} ansURL={worksheet.answer_url}/>
       </Box> : <Spinner />}
       </div>
     </Section>

@@ -10,12 +10,12 @@ type BoundingBoxType = {
     setFocus: Function, 
     focused: boolean, 
     intersecting: boolean,
+    ratio: number,
 }
 
-function BoundingBox({width, height, x, y, i, setBox, setFocus, focused, intersecting} : BoundingBoxType) {
+function BoundingBox({width, height, x, y, i, setBox, setFocus, focused, intersecting, ratio} : BoundingBoxType) {
     return (
         <Rnd
-            className='draggable'
             bounds='parent'
             size={{ width: width, height: height }}
             style={{
@@ -24,6 +24,7 @@ function BoundingBox({width, height, x, y, i, setBox, setFocus, focused, interse
             }}
             position={{ x: x, y: y }}
             onDrag={(_e, d) => {
+                console.log(d.y - y)
                 setBox(i, d.x, d.y, width, height)
             }}
             onResizeStop={(_e, _direction, ref, _delta, position) => {
