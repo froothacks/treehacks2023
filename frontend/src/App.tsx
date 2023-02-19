@@ -11,7 +11,8 @@ import {Worksheets} from "./pages/worksheets";
 export const App = () => {
     return (
         <div className="App" style={{height: "100vh"}}>
-            <Header/>
+            {/* <Header/> */}
+            <h1>hi</h1>
             <div style={{height: "calc(100% - 60px)", display: "flex", flexDirection: "column"}}>
                 <div style={{height: "100%"}}>
                     <Routes>

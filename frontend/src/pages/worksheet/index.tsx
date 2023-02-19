@@ -23,16 +23,14 @@ import {
   Input,
   FormHelperText,
 } from "@chakra-ui/react";
+import WorksheetLabeller, { BoundingBoxType } from "src/components/WorksheetLabeller";
+import { Id } from "src/convex/_generated/dataModel";
 
 import { Card, CardHeader, CardBody, CardFooter, Text } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { BaseRoute, QueryParams } from "src/constants/routes";
 import { Section } from "src/components/Section";
-import WorksheetLabeller, {
-  BoundingBoxType,
-} from "src/components/WorksheetLabeller";
 import { useMutation, useQuery } from "src/convex/_generated/react";
-import { Id } from "src/convex/_generated/dataModel";
 import { useUploadImage } from "src/hooks/api";
 
 type UploadWorksheetsProps = {
@@ -109,6 +107,7 @@ const UploadSubmissionModal: React.FC<UploadWorksheetsProps> = ({
   );
 };
 
+
 export const Worksheet = () => {
   const params = useParams();
   const navigate = useNavigate();
@@ -120,86 +119,63 @@ export const Worksheet = () => {
 
   console.log({ worksheet });
 
-  const [boxes, setBoxes] = useState<Array<BoundingBoxType> | null>(null);
+  const [boxes, setBoxes] = useState<Array<BoundingBoxType> | null>(null)
 
   useEffect(() => {
     const getBoundingBoxes = async () => {
       const boundingBoxes = await fetch("http://127.0.0.1:5000/bb", {
-        method: "POST",
-        mode: "cors",
-        body: JSON.stringify({
-          ans_url: worksheet.answer_url,
-          blank_url: worksheet.blank_url,
-        }),
-      });
-      const data = await boundingBoxes.json();
-      setBoxes(data);
-    };
-    if (worksheet) {
-      getBoundingBoxes();
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify({
+                ans_url: worksheet.answer_url,
+                blank_url: worksheet.blank_url,
+            })
+        })
+        const data = await boundingBoxes.json()
+        setBoxes(data)
     }
-  }, [worksheet]);
+    if(worksheet?.answer_url && worksheet?.blank_url) getBoundingBoxes()
+  }, [worksheet])
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const submissions = useQuery("listMessages:getAllSubmissions") ?? [];
-
-  console.log({ worksheet });
-
-  const [didUpdateBoundingBoxes, setUpdateBoundingBoxes] = useState(false);
-
-  // TODO: Pull for boolean field didUpdateBB
 
   return (
-    <Section>
-      {worksheet && <Text>ID: {worksheet._id.id}</Text>}
-      <Button onClick={() => setUpdateBoundingBoxes((prev) => !prev)}>
-        Toggle boolean
-      </Button>
-      <div className="Worksheet">
-        {boxes ? (
-          <Box pb={8}>
-            <WorksheetLabeller boxesInput={boxes} />
-          </Box>
-        ) : (
-          <Spinner />
-        )}
+  <div>
+  {boxes ? 
+  <Box pb={8}>
+    <WorksheetLabeller boxesInput={boxes} ansURL={worksheet.answer_url}/>
+  </Box> : <Spinner />}
+  </div>
+  )
 
-        {didUpdateBoundingBoxes ? (
-          <div>
-            <Button onClick={onOpen}>Add submission</Button>
-            <List spacing={3}>
-              {submissions.map((sub: any) => {
-                const id = sub._id.id;
-                return (
-                  <ListItem>
-                    <Card>
-                      <Link
-                        onClick={() =>
-                          navigate(`${BaseRoute.SUBMISSIONS}/${id}`)
-                        }
-                      >
-                        <CardBody>
-                          <Text>{`Submission ${id}`}</Text>
-                        </CardBody>
-                      </Link>
-                    </Card>
-                  </ListItem>
-                );
-              })}
-            </List>
-            <UploadSubmissionModal
-              isOpen={isOpen}
-              onClose={onClose}
-              worksheet_id={ws_id}
-            />
-          </div>
-        ) : (
-          // <Box pb={8}>
-          //   <WorksheetLabeller />
-          // </Box>
-          <div></div>
-        )}
-      </div>
-    </Section>
-  );
+  // return (
+  //   <Section>
+  //     {worksheet && <Text>ID: {worksheet._id.id}</Text>}
+  //     {/* <Button onClick={() => setUpdateBoundingBoxes((prev) => !prev)}>
+  //       Toggle boolean
+  //     </Button> */}
+  //     <div className="Worksheet">
+        
+  //       {boxes ? <Box pb={8}>
+  //         <WorksheetLabeller boxesInput={boxes} ansURL={worksheet.answer_url}/>
+  //       </Box> : <Spinner />}
+        
+
+  //       {/* <List spacing={3}>
+  //         {Array.from(Array(30).keys()).map((id) => (
+  //           <ListItem>
+  //             <Card>
+  //               <Link
+  //                 onClick={() => navigate(`${BaseRoute.SUBMISSIONS}/${id}`)}
+  //               >
+  //                 <CardBody>
+  //                   <Text>{`Submission ${id}`}</Text>
+  //                 </CardBody>
+  //               </Link>
+  //             </Card>
+  //           </ListItem>
+  //         ))}
+  //       </List> */}
+  //     </div>
+  //   </Section>
+  // );
 };
