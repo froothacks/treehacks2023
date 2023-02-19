@@ -35,7 +35,7 @@ export const App = () => {
               path={RouteName.WORKSHEET}
               element={
                 <ProtectedRoute>
-                  <Worksheets />
+                  <Worksheet />
                 </ProtectedRoute>
               }
             />
