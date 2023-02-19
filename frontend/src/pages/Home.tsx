@@ -14,7 +14,7 @@ function Image({message}: { message: any }) {
 
 export const Home = () => {
     const getAllWorksheets = useQuery("listMessages:getAllWorksheets") || [];
-    const messages = useQuery("listMessages") || [];
+    // const messages = useQuery("listMessages") || [];
     const navigate = useNavigate();
 
     // const data = useQuery("listMessages");
