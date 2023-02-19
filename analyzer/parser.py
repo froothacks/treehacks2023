@@ -88,22 +88,24 @@ class Parser:
 
     def get_text_for_bounding_boxes(self, image, bounding_boxes):
         images = []
+        output = []
         for box in bounding_boxes:
-            w = box["width"]
-            h = box["height"]
-            x = box["x"]
-            y = box["y"]
+            w = int(float(box["width"]))
+            h = int(float(box["height"]))
+            x = int(float(box["x"]))
+            y = int(float(box["y"]))
 
-            sliced = image[y - 2: y + h + 2, x - 2: x + w + 2]
+            sliced = image[y: y + h, x: x + w]
+            show([], sliced)
             images.append(sliced)
 
-        generated_text = self.extract_text_from_images(images)
-        for idx, g in enumerate(generated_text):
-            bounding_boxes[idx]["text"] = g
+        generated_text = self.__extract_text_from_images(images)
+        for g in generated_text:
+            output.append(g)
 
-        return bounding_boxes
+        return output
 
-    def extract_text_from_images(self, images):
+    def __extract_text_from_images(self, images):
         start = time.time()
         pixel_values = self.processor(images=images, return_tensors="pt").pixel_values
         generated_ids = self.model.generate(pixel_values, max_length=2)

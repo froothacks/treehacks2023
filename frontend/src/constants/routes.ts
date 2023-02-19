@@ -3,6 +3,8 @@ export enum BaseRoute {
   CREATE_ACCOUNT = "/account",
   WORKSHEETS = "/worksheets",
   SUBMISSIONS = "/submissions",
+  CLASSES = "/classes",
+  STUDENTS = "/students",
   NOT_FOUND = "/404",
 }
 
@@ -17,5 +19,7 @@ export const RouteName = {
   WORKSHEETS: BaseRoute.WORKSHEETS as const,
   WORKSHEET: `${BaseRoute.WORKSHEETS}/:${QueryParams.WORKSHEET_ID}` as const,
   SUBMISSION: `${BaseRoute.SUBMISSIONS}/:${QueryParams.SUBMISSION_ID}` as const,
+  CLASSES: BaseRoute.CLASSES as const,
+  STUDENTS: BaseRoute.STUDENTS as const,
   NOT_FOUND: BaseRoute.NOT_FOUND as const,
 };

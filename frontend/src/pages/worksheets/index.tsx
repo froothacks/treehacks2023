@@ -21,6 +21,12 @@ import {
   FormErrorMessage,
   FormHelperText,
   Spacer,
+  useToast,
+  SimpleGrid,
+  Heading,
+  HStack,
+  Box,
+  SkeletonText,
 } from "@chakra-ui/react";
 
 import { Card, CardHeader, CardBody, CardFooter, Text } from "@chakra-ui/react";
@@ -30,6 +36,8 @@ import { BaseRoute } from "src/constants/routes";
 
 import { useUploadImage } from "src/hooks/api";
 import { useMutation, useQuery } from "src/convex/_generated/react";
+import { AddIcon, PlusSquareIcon } from "@chakra-ui/icons";
+import styled from "@emotion/styled";
 
 type UploadWorksheetsProps = {
   onClose: () => void;
@@ -42,6 +50,7 @@ const UploadWorksheetsModal: React.FC<UploadWorksheetsProps> = ({
 }) => {
   const uploadImage = useUploadImage();
   const navigate = useNavigate();
+  const toast = useToast();
   const createWorksheet = useMutation("sendMessage:createWorksheet");
 
   const imageInput = useRef(null);
@@ -50,23 +59,38 @@ const UploadWorksheetsModal: React.FC<UploadWorksheetsProps> = ({
   const [blankWorksheet, setBlankWorksheet] = useState<File>();
 
   const handleCreateWorksheet = async () => {
-    const answerKeyWorksheetID = await uploadImage(answerKey);
-    const blankWorksheetID = await uploadImage(blankWorksheet);
+    try {
+      const answerKeyWorksheetID = await uploadImage(answerKey);
+      const blankWorksheetID = await uploadImage(blankWorksheet);
 
-    const { worksheetId } = await createWorksheet(
-      name,
-      "asx35pHuC8dhWHrhZ-lLzg",
-      "temp_date",
-      answerKeyWorksheetID,
-      blankWorksheetID
-    );
+      const { worksheetId } = await createWorksheet(
+        name,
+        "asx35pHuC8dhWHrhZ-lLzg",
+        "temp_date",
+        answerKeyWorksheetID,
+        blankWorksheetID
+      );
+      toast({
+        title: `A new worksheet has been successfully created :)`,
+        status: "success",
+        isClosable: true,
+        position: "bottom-right",
+      });
 
-    // cleanup
-    setAnswerKey(undefined);
-    setBlankWorksheet(undefined);
+      // cleanup
+      setAnswerKey(undefined);
+      setBlankWorksheet(undefined);
 
-    onClose();
-    navigate(`${BaseRoute.WORKSHEETS}/${worksheetId}`);
+      onClose();
+      navigate(`${BaseRoute.WORKSHEETS}/${worksheetId}`);
+    } catch (_) {
+      toast({
+        title: `Unfortunately, something went wrong along the way :( `,
+        status: "error",
+        isClosable: true,
+        position: "bottom-right",
+      });
+    }
   };
 
   return (
@@ -74,7 +98,9 @@ const UploadWorksheetsModal: React.FC<UploadWorksheetsProps> = ({
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Create Worksheet</ModalHeader>
+          <ModalHeader>
+            <Heading>Create Worksheet</Heading>
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl>
@@ -120,39 +146,73 @@ const UploadWorksheetsModal: React.FC<UploadWorksheetsProps> = ({
     </>
   );
 };
+
+const MotionCard = styled(Card)`
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    transform: scale(1.08);
+  }
+`;
+
 export const Worksheets = () => {
   const navigate = useNavigate();
 
-  const worksheets = useQuery("listMessages:getAllWorksheets") ?? [];
+  const worksheets = useQuery("listMessages:getAllWorksheets");
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  console.log({ worksheets });
+  // console.log({ worksheets });
+
+  // const worksheets = undefined;
 
   return (
     <div className="Worksheets">
       <Section>
-        <Button onClick={onOpen}>Create worksheet</Button>
-        <Spacer h={6} />
-        <List spacing={6}>
-          {worksheets.map((ws: any) => {
-            const id = ws._id.id;
-            return (
-              <ListItem key={id}>
-                <Card>
-                  <Link
-                    onClick={() => navigate(`${BaseRoute.WORKSHEETS}/${id}`)}
-                  >
+        <Box display={"flex"} justifyContent="space-between">
+          <Heading>Worksheets</Heading>
+          <Button onClick={onOpen} leftIcon={<AddIcon boxSize={3} />}>
+            <Text>Create</Text>
+          </Button>
+        </Box>
+        <Spacer h={10} />
+        <SimpleGrid
+          spacingX={6}
+          spacingY={10}
+          templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
+        >
+          {worksheets
+            ? worksheets.map((ws: any) => {
+                const id = ws._id.id;
+                return (
+                  <MotionCard key={id} boxShadow="lg" borderRadius={16}>
+                    <CardHeader>
+                      <Heading size="md">{ws.name}</Heading>
+                    </CardHeader>
                     <CardBody>
-                      <Text>
-                        {ws.name} | {id}
-                      </Text>
+                      <Text>Class: Gr8-Math</Text>
+                      <Text>Students: 35</Text>
+                      <Text>Due: 13/02/2022</Text>
                     </CardBody>
-                  </Link>
-                </Card>
-              </ListItem>
-            );
-          })}
-        </List>
+                    <CardFooter>
+                      <Button
+                        onClick={() =>
+                          navigate(`${BaseRoute.WORKSHEETS}/${id}`)
+                        }
+                        variant={"solid"}
+                        size="md"
+                        width={"100%"}
+                      >
+                        <Text>View</Text>
+                      </Button>
+                    </CardFooter>
+                  </MotionCard>
+                );
+              })
+            : Array.from(Array(16).keys()).map(() => (
+                <Box padding="6" boxShadow="lg" borderRadius={16} bg="white">
+                  <SkeletonText mt="4" noOfLines={6} spacing="4" />
+                </Box>
+              ))}
+        </SimpleGrid>
       </Section>
       <UploadWorksheetsModal isOpen={isOpen} onClose={onClose} />
     </div>
