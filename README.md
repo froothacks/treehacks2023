@@ -1,5 +1,7 @@
 # Grad✓ient
 
+#### Video Demo Link: https://youtu.be/kqFfeN0--YQ
+
 ## Inspiration
 
 One of our teammates, Albert, used to work part-time at Kumon, which is a tutoring service that focuses on tutoring in math and English. Specifically, he used to spend countless hours working on the mundane task of grading elementary school math worksheets. This type of work isn't particularly enjoyable and can be prone to human error as well, due to the tedious repetition, similar to assembly lines within factories. For Kumon alone, over 4 million students study across 58 countries with over 25,000 centers, which is a crazy-large scale (source: VettedBiz). The same problem applies to elementary schools across the world that use similar worksheets, applying to tens of millions more students and markers. 
