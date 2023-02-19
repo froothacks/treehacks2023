@@ -77,6 +77,10 @@ class StartGrading(Resource):
         print(boundingboxes)
 
         submittedFiles = map(lambda x: x['submission_file_url'], submissions)
+
+        for subId, subFile in enumerate(submittedFiles):
+            client.mutation("sendMessage:startMarkingSubmission", submissions[subId]['_id'].id)
+
         for subId, subFile in enumerate(submittedFiles):
             aImage = get_img(subFile)
             aImageAnswers = bbParser.get_text_for_bounding_boxes(aImage, boundingboxes)

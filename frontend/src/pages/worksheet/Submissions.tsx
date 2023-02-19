@@ -159,18 +159,21 @@ export const WorksheetSubmissions = () => {
       <List spacing={3}>
         {submissions.map((sub: any) => {
           const id = sub._id.id;
+          const status = sub.ocr_status;
           return (
             <ListItem>
               <MotionCard key={id} boxShadow="lg" borderRadius={16}>
                 <CardBody>
                   <Box display={"flex"} justifyContent="space-between">
                     <Text>Advait's Submission</Text>
-                    {/* <Text>Score: </Text> */}
-                    <Box display={"flex"} alignItems="center">
-                      <Text mr="3">Grading</Text>
-                      <Spinner size={"sm"} />
-                    </Box>
-                    {/* <Text>Score: </Text> */}
+                    {status === "processing" ? (
+                      <Box display={"flex"} alignItems="center">
+                        <Text mr="3">Grading</Text>
+                        <Spinner size={"sm"} />
+                      </Box>
+                    ) : status === "finished" ? (
+                      <Text>Score: </Text>
+                    ) : null}
                   </Box>
                 </CardBody>
               </MotionCard>

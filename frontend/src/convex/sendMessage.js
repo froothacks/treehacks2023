@@ -41,18 +41,9 @@ export const createWorksheet = mutation(
 );
 
 export const updateWorksheetLabelling = mutation(
-  async ({ db, storage }, worksheetID) => {
-    console.log({ worksheetID });
+  async ({ db }, worksheetID) => {
     const id = new Id("worksheets", worksheetID);
-
-    return (
-      (await db.patch) <
-      "worksheets" >
-      (id,
-      {
-        labelling_done: true,
-      })
-    );
+    return await db.patch(id, { labelling_done: true });
   }
 );
 
@@ -70,27 +61,27 @@ export const createSubmission = mutation(
   }
 );
 
-export const updateWorksheetLabelling = mutation(
-  async ({ db, storage }, worksheetID) => {
-    console.log({ worksheetID });
-    const id = new Id("worksheets", worksheetID);
-
-    return await db.patch(id, {
-      labelling_done: true,
-    });
-  }
-);
-
 export const createBoundingBoxes = mutation(
   async ({ db }, { worksheetID, box }) => {
     return await db.insert("boundingboxes", { ...box, worksheetID });
   }
 );
 
+export const startMarkingSubmission = mutation(async ({ db }, submissionID) => {
+  const id = new Id("submissions", submissionID);
+  return await db.patch(id, {
+    ocr_status: "processing",
+  });
+});
+
 export const markSubmission = mutation(
   async ({ db }, submissionID, feedbacks, totalScore) => {
     const id = new Id("submissions", submissionID);
-    return await db.patch(id, { feedbacks, totalScore });
+    return await db.patch(id, {
+      feedbacks,
+      totalScore,
+      ocr_status: "finished",
+    });
   }
 );
 
