@@ -7,9 +7,12 @@ import { useMutation, useQuery } from "src/convex/_generated/react";
 import { WorksheetSubmissions } from "./Submissions";
 import { WorksheetLabelling } from "./Labelling";
 import { Section } from "src/components/Section";
-import { Button } from "@chakra-ui/react";
+import { Box, Button, Heading, Text } from "@chakra-ui/react";
 
 import { useInterval } from "usehooks-ts";
+import Lottie from "react-lottie-player";
+
+import animation from "src/static/animation.json";
 
 export const Worksheet = () => {
   const params = useParams();
@@ -18,19 +21,34 @@ export const Worksheet = () => {
     "listMessages:getWorksheet",
     new Id("worksheets", ws_id)
   );
-  const [didUpdateBoundingBoxes, setUpdateBoundingBoxes] = useState(false);
+  const [finishedLabelling, setFinishLabelling] = useState(false);
   const [startLabelling, setStartLabelling] = useState(false);
 
+  console.log({ startLabelling, finishedLabelling });
   useInterval(() => {
     if (worksheet && worksheet.labelling_done) {
-      setUpdateBoundingBoxes(true);
+      setFinishLabelling(true);
       console.log({ worksheet });
     }
   }, 1000);
 
+  if (startLabelling && !finishedLabelling) {
+    return (
+      <Box display="flex" flexDirection="column" justifyContent={"center"} alignItems="center">
+        <Lottie
+          loop
+          animationData={animation}
+          play
+          style={{ width: 600, height: 600 }}
+        />
+       <Heading as="h2" fontSize={20}>Computing eigenvalues and calculating grades...</Heading>
+      </Box>
+    );
+  }
+
   return (
     <div>
-      {didUpdateBoundingBoxes ? (
+      {finishedLabelling ? (
         <WorksheetSubmissions />
       ) : (
         <WorksheetLabelling startLabelling={() => setStartLabelling(true)} />
