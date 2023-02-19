@@ -14,24 +14,16 @@ export interface BoundingBoxType {
   y: number;
 }
 
-function submit(boxes: Array<BoundingBoxType>, worksheetId: string) {
-  fetch("http://localhost:5001/ab", {
-    method: "POST",
-    body: JSON.stringify({
-      boundingBoxes: boxes,
-      worksheetId: worksheetId,
-    }),
-  });
-}
-
 function WorksheetLabeller({
   boxesInput,
   ansURL,
   worksheetId,
+  startLabelling,
 }: {
   boxesInput: Array<BoundingBoxType>;
   ansURL: string;
   worksheetId: string;
+  startLabelling: () => void;
 }) {
   const [boxes, setBoxes] = useState<Array<BoundingBoxType>>(boxesInput);
   const [focus, setFocus] = useState<number | null>(null);
@@ -39,6 +31,17 @@ function WorksheetLabeller({
   const [deleteMode, setDeleteMode] = useState<boolean>(false);
   const ref = useRef<HTMLDivElement>(null);
   const WIDTH = 1000;
+
+  function submit(boxes: Array<BoundingBoxType>, worksheetId: string) {
+    startLabelling;
+    fetch("http://localhost:5001/ab", {
+      method: "POST",
+      body: JSON.stringify({
+        boundingBoxes: boxes,
+        worksheetId: worksheetId,
+      }),
+    });
+  }
 
   useEffect(() => {
     getImageDimensions(ansURL);
