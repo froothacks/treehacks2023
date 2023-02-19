@@ -21,6 +21,11 @@ import {
   FormErrorMessage,
   FormHelperText,
   Spacer,
+  useToast,
+  SimpleGrid,
+  Heading,
+  HStack,
+  Box,
 } from "@chakra-ui/react";
 
 import { Card, CardHeader, CardBody, CardFooter, Text } from "@chakra-ui/react";
@@ -30,6 +35,7 @@ import { BaseRoute } from "src/constants/routes";
 
 import { useUploadImage } from "src/hooks/api";
 import { useMutation, useQuery } from "src/convex/_generated/react";
+import { AddIcon, PlusSquareIcon } from "@chakra-ui/icons";
 
 type UploadWorksheetsProps = {
   onClose: () => void;
@@ -42,6 +48,7 @@ const UploadWorksheetsModal: React.FC<UploadWorksheetsProps> = ({
 }) => {
   const uploadImage = useUploadImage();
   const navigate = useNavigate();
+  const toast = useToast();
   const createWorksheet = useMutation("sendMessage:createWorksheet");
 
   const imageInput = useRef(null);
@@ -50,23 +57,38 @@ const UploadWorksheetsModal: React.FC<UploadWorksheetsProps> = ({
   const [blankWorksheet, setBlankWorksheet] = useState<File>();
 
   const handleCreateWorksheet = async () => {
-    const answerKeyWorksheetID = await uploadImage(answerKey);
-    const blankWorksheetID = await uploadImage(blankWorksheet);
+    try {
+      const answerKeyWorksheetID = await uploadImage(answerKey);
+      const blankWorksheetID = await uploadImage(blankWorksheet);
 
-    const { worksheetId } = await createWorksheet(
-      name,
-      "asx35pHuC8dhWHrhZ-lLzg",
-      "temp_date",
-      answerKeyWorksheetID,
-      blankWorksheetID
-    );
+      const { worksheetId } = await createWorksheet(
+        name,
+        "asx35pHuC8dhWHrhZ-lLzg",
+        "temp_date",
+        answerKeyWorksheetID,
+        blankWorksheetID
+      );
+      toast({
+        title: `A new worksheet has been successfully created :)`,
+        status: "success",
+        isClosable: true,
+        position: "bottom-right",
+      });
 
-    // cleanup
-    setAnswerKey(undefined);
-    setBlankWorksheet(undefined);
+      // cleanup
+      setAnswerKey(undefined);
+      setBlankWorksheet(undefined);
 
-    onClose();
-    navigate(`${BaseRoute.WORKSHEETS}/${worksheetId}`);
+      onClose();
+      navigate(`${BaseRoute.WORKSHEETS}/${worksheetId}`);
+    } catch (_) {
+      toast({
+        title: `Unfortunately, something went wrong along the way :( `,
+        status: "error",
+        isClosable: true,
+        position: "bottom-right",
+      });
+    }
   };
 
   return (
@@ -74,7 +96,9 @@ const UploadWorksheetsModal: React.FC<UploadWorksheetsProps> = ({
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Create Worksheet</ModalHeader>
+          <ModalHeader>
+            <Heading>Create Worksheet</Heading>
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl>
@@ -131,28 +155,44 @@ export const Worksheets = () => {
   return (
     <div className="Worksheets">
       <Section>
-        <Button onClick={onOpen}>Create worksheet</Button>
-        <Spacer h={6} />
-        <List spacing={6}>
+        <Box display={"flex"} justifyContent="space-between">
+          <Heading>Worksheets</Heading>
+          <Button onClick={onOpen} leftIcon={<AddIcon boxSize={3} />}>
+            <Text>Create</Text>
+          </Button>
+        </Box>
+        <Spacer h={10} />
+        <SimpleGrid
+          spacingX={4}
+          spacingY={8}
+          templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
+        >
           {worksheets.map((ws: any) => {
             const id = ws._id.id;
             return (
-              <ListItem key={id}>
-                <Card>
-                  <Link
+              <Card key={id}>
+                <CardHeader>
+                  <Heading size="md">{ws.name}</Heading>
+                </CardHeader>
+                <CardBody>
+                  <Text>Class: Gr8-Math</Text>
+                  <Text>Students: 35</Text>
+                  <Text>Due: 13/02/2022</Text>
+                </CardBody>
+                <CardFooter>
+                  <Button
                     onClick={() => navigate(`${BaseRoute.WORKSHEETS}/${id}`)}
+                    variant={"solid"}
+                    size="md"
+                    width={"100%"}
                   >
-                    <CardBody>
-                      <Text>
-                        {ws.name} | {id}
-                      </Text>
-                    </CardBody>
-                  </Link>
-                </Card>
-              </ListItem>
+                    <Text>View</Text>
+                  </Button>
+                </CardFooter>
+              </Card>
             );
           })}
-        </List>
+        </SimpleGrid>
       </Section>
       <UploadWorksheetsModal isOpen={isOpen} onClose={onClose} />
     </div>
