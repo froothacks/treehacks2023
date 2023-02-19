@@ -66,10 +66,10 @@ class Parser:
             if w > 10 and h > 10:
                 print(w, h, w * h)
                 boxes.append({
-                    "width": w + 20,
-                    "height": h + 20,
-                    "x": x - 10,
-                    "y": y - 10,
+                    "width": w + 30,
+                    "height": h + 30,
+                    "x": x - 20,
+                    "y": y - 20,
                 })
         return boxes
 
@@ -96,7 +96,6 @@ class Parser:
             y = int(float(box["y"]))
 
             sliced = image[y: y + h, x: x + w]
-            show([], sliced)
             images.append(sliced)
 
         generated_text = self.__extract_text_from_images(images)

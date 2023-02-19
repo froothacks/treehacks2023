@@ -10,9 +10,10 @@ type BoundingBoxType = {
     setFocus: Function, 
     focused: boolean, 
     intersecting: boolean,
+    getParentPosition: Function,
 }
 
-function BoundingBox({width, height, x, y, i, setBox, setFocus, focused, intersecting} : BoundingBoxType) {
+function BoundingBox({width, height, x, y, i, setBox, setFocus, focused, intersecting, getParentPosition} : BoundingBoxType) {
     return (
         <Rnd
             bounds='parent'
@@ -23,7 +24,7 @@ function BoundingBox({width, height, x, y, i, setBox, setFocus, focused, interse
             }}
             position={{ x: x, y: y }}
             onDrag={(_e, d) => {
-                setBox(i, d.x, d.y, width, height)
+                setBox(i, d.x - (getParentPosition()?.left || 0)*2, d.y - (getParentPosition()?.top || 0)*2, width, height)
             }}
             onResizeStop={(_e, _direction, ref, _delta, position) => {
                 setBox(i, position.x, position.y, ref.style.width, ref.style.height)

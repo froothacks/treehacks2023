@@ -52,7 +52,7 @@ class AddBoundingBoxesService(Resource):
     def run(worksheetId, boxes):
         worksheet = client.query("listMessages:getWorksheet", worksheetId)
         get_answers(get_img(worksheet["answer_url"]), worksheetId, boxes)
-
+        client.mutation("sendMessage:setTotalScoreWS", worksheetId, len(boxes))
 
     def post(self):
         json_data = request.get_json(force=True)
@@ -62,39 +62,38 @@ class AddBoundingBoxesService(Resource):
         p.start()
 
 
-
 class StartGrading(Resource):
     def post(self):
-        def process(x):
-            return get_img(x)
 
         json_data = request.get_json(force=True)
 
         worksheetId = json_data['worksheetId']
         submissions = client.query("listMessages:getAllSubmissionsForWorksheet", worksheetId)
         boundingboxes = client.query("listMessages:getBB", worksheetId)
+        print(submissions)
+        print(boundingboxes)
 
         submittedFiles = map(lambda x: x['submission_file_url'], submissions)
-        with Pool(4) as p:
-            images = p.map(process, submittedFiles)
-
-        for subId, aImage in enumerate(images):
+        for subId, subFile in enumerate(submittedFiles):
+            aImage = get_img(subFile)
             aImageAnswers = bbParser.get_text_for_bounding_boxes(aImage, boundingboxes)
-            answerKeyAnswers = map(lambda x: x["text"], boundingboxes)
+            answerKeyAnswers = [x["text_answer"] for x in boundingboxes]
+
+            print(aImageAnswers)
 
             feedbacks = []
+            totalScore = 0
             for i in range(len(aImageAnswers)):
-                correct = aImageAnswers[i] == answerKeyAnswers[i]
-                feedbacks.append({"bb_id": boundingboxes[i].id, "score": correct})
+                score = int(aImageAnswers[i] == answerKeyAnswers[i])
+                feedbacks.append({"bb_id": boundingboxes[i]['_id'].id, "score": score})
+                totalScore += score
 
-            client.mutation("sendMessage:markSubmission", submissions[subId].id, feedbacks)
-
-        return submissions
+            client.mutation("sendMessage:markSubmission", submissions[subId]['_id'].id, feedbacks, totalScore)
 
 
 api.add_resource(BoundingBoxService, '/bb')
 api.add_resource(AddBoundingBoxesService, '/ab')
-api.add_resource(StartGrading, '/grading')
+api.add_resource(StartGrading, '/start_grading')
 
 if __name__ == '__main__':
     app.run(debug=True)

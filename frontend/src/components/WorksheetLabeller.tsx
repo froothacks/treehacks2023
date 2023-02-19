@@ -86,7 +86,7 @@ function WorksheetLabeller({boxesInput, ansURL, worksheetId}: { boxesInput: Arra
 
     return <div>
         {ratio ? <div>
-            <div ref={ref} className='container' style={{border: "1px black solid"}}>
+            <div ref={ref} className='container' style={{border: "1px black solid", width:"1000px"}}>
                 <img src={ansURL} width="1000px"/>
                 {boxes.map((box, i) => {
                     console.log(box.width)
@@ -102,6 +102,7 @@ function WorksheetLabeller({boxesInput, ansURL, worksheetId}: { boxesInput: Arra
                         setFocus={setFocus}
                         focused={focus === i}
                         intersecting={checkIntersecting(i)}
+                        getParentPosition={getParentPosition}
                     />
                 })}
             </div>
