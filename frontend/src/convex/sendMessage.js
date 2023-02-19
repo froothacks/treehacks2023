@@ -1,5 +1,5 @@
-import { mutation } from "./_generated/server";
-import { query } from "./_generated/server";
+import {mutation} from "./_generated/server";
+import {Id} from "./_generated/dataModel";
 
 // export default mutation(async ({ db }, body, author) => {
 //   const message = { body: body, author: author, test1: "test2" };
@@ -53,10 +53,12 @@ export const createSubmission = mutation(
 );
 
 export const createBoundingBoxes = mutation(
-  async ({ db }, { worksheetID, box: BBs }) => {
-    console.log(worksheetID, BBs);
-    await Promise.all(
-      BBs?.map((bb) => db.insert("boundingboxes", { ...bb, worksheetID }))
-    );
+  async ({ db }, { worksheetID, box }) => {
+    return await db.insert("boundingboxes", {...box, worksheetID})
   }
 );
+
+export const markSubmission = mutation(async ({db}, submissionID, feedbacks) => {
+    const id = new Id("submissions", submissionID)
+    return await db.patch(id, {feedbacks})
+})

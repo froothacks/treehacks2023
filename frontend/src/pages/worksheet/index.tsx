@@ -30,7 +30,15 @@ export const Worksheet = () => {
   );
   const [didUpdateBoundingBoxes, setUpdateBoundingBoxes] = useState(false);
 
-  console.log({ worksheet });
+    const startGrading = () => {
+        console.log(ws_id);
+        fetch("http://localhost:5000/start_grading", {
+            method: "POST",
+            body: JSON.stringify({
+                worksheetId: ws_id
+            })
+        })
+    }
 
   usePollingUpdate(() => {
     if (worksheet && worksheet.ocr_done) {
