@@ -143,16 +143,12 @@ export const Worksheets = () => {
   const worksheets = useQuery("listMessages:getAllWorksheets") ?? [];
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const handleUploadWorksheet = () => {
-    onOpen();
-  };
-
   console.log({ worksheets });
 
   return (
     <div className="Worksheets">
       <Section>
-        <Button onClick={handleUploadWorksheet}>Create worksheet</Button>
+        <Button onClick={onOpen}>Create worksheet</Button>
         <Spacer h={6} />
         <List spacing={6}>
           {worksheets.map((ws: any) => {
