@@ -63,7 +63,7 @@ const UploadWorksheetsModal: React.FC<UploadWorksheetsProps> = ({
       const answerKeyWorksheetID = await uploadImage(answerKey);
       const blankWorksheetID = await uploadImage(blankWorksheet);
 
-      const { worksheetId } = await createWorksheet(
+      const worksheetId = await createWorksheet(
         name,
         "asx35pHuC8dhWHrhZ-lLzg",
         "temp_date",
@@ -207,8 +207,14 @@ export const Worksheets = () => {
                   </MotionCard>
                 );
               })
-            : Array.from(Array(16).keys()).map(() => (
-                <Box padding="6" boxShadow="lg" borderRadius={16} bg="white">
+            : Array.from(Array(16).keys()).map((id) => (
+                <Box
+                  key={id}
+                  padding="6"
+                  boxShadow="lg"
+                  borderRadius={16}
+                  bg="white"
+                >
                   <SkeletonText mt="4" noOfLines={6} spacing="4" />
                 </Box>
               ))}
