@@ -48,13 +48,14 @@ export const updateWorksheetLabelling = mutation(
 );
 
 export const createSubmission = mutation(
-  async ({ db, storage }, worksheetID, submissionFileID) => {
+  async ({ db, storage }, worksheetID, submissionFileID, submissionName) => {
     // const answerURL = await storage.getUrl(answerID);
     const submissionFileURL = await storage.getUrl(submissionFileID);
     const submission = {
       worksheet_id: worksheetID,
       submission_file_url: submissionFileURL,
       ocr_status: "default",
+      name: submissionName,
     };
     const submissionId = await db.insert("submissions", submission);
     return { submissionId: submissionId.id, submissionFileURL };

@@ -73,13 +73,14 @@ class StartGrading(Resource):
         submissions = client.query("listMessages:getAllSubmissionsForWorksheet", worksheetId)
         boundingboxes = client.query("listMessages:getBB", worksheetId)
 
-        submittedFiles = map(lambda x: x['submission_file_url'], submissions)
-
+        submittedFiles = [x['submission_file_url'] for x in submissions]
+        print("Processing", submittedFiles)
         for subId, subFile in enumerate(submittedFiles):
             client.mutation("sendMessage:startMarkingSubmission", submissions[subId]['_id'].id)
 
         for subId, subFile in enumerate(submittedFiles):
             aImage = get_img(subFile)
+            print("Starting Processing for", subId)
             aImageAnswers = bbParser.get_text_for_bounding_boxes(aImage, boundingboxes)
             answerKeyAnswers = [x["text_answer"] for x in boundingboxes]
 
@@ -93,6 +94,7 @@ class StartGrading(Resource):
                 totalScore += score
 
             client.mutation("sendMessage:markSubmission", submissions[subId]['_id'].id, feedbacks, totalScore)
+        print("Done")
 
 
 api.add_resource(BoundingBoxService, '/bb')
