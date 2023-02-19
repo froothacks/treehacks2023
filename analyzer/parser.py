@@ -57,7 +57,7 @@ class Parser:
         # Apply a threshold to the difference image
         _, correct_answers = cv2.threshold(correct_answers, self.threshold, 255, cv2.THRESH_BINARY)
 
-        cnts = cv2.findContours(correct_answers, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        cnts = cv2.findContours(correct_answers, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
         contours = cnts[0] if len(cnts) == 2 else cnts[1]
         # Draw the contours on the original image
@@ -66,10 +66,10 @@ class Parser:
             if w > 10 and h > 10:
                 print(w, h, w * h)
                 boxes.append({
-                    "width": w,
-                    "height": h,
-                    "x": x,
-                    "y": y,
+                    "width": w + 20,
+                    "height": h + 20,
+                    "x": x - 10,
+                    "y": y - 10,
                 })
         return boxes
 
