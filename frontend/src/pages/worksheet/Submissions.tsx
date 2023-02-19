@@ -59,7 +59,8 @@ const UploadSubmissionModal: React.FC<UploadWorksheetsProps> = ({
 
           const { submissionId } = await createSubmission(
             worksheet_id,
-            submissionImageID
+            submissionImageID,
+            name
           );
           return submissionId;
         })
@@ -164,8 +165,8 @@ export const WorksheetSubmissions = () => {
           const id = sub._id.id;
           const status = sub.ocr_status;
           return (
-            <ListItem>
-              <MotionCard key={id} boxShadow="lg" borderRadius={16}>
+            <ListItem key={id}>
+              <MotionCard boxShadow="lg" borderRadius={16}>
                 <CardBody>
                   <Box display={"flex"} justifyContent="space-between">
                     <Text>{sub.name || "Leon F"}</Text>
