@@ -1,7 +1,7 @@
 import {Rnd} from 'react-rnd';
 import {Text} from "@chakra-ui/react"
-import {CheckIcon, CloseIcon} from '@chakra-ui/icons'
 import React from "react";
+import { CheckIcon, CloseIcon } from '@chakra-ui/icons'
 
 type BoundingBoxType = {
     width: string,
@@ -31,10 +31,7 @@ function BoundingBox({
                          focused,
                          intersecting,
                          getParentPosition,
-                         deleteIfDeleteMode,
-                         ans,
-                         correct,
-                         readOnly
+                         deleteIfDeleteMode, ans, correct, readOnly
                      }: BoundingBoxType) {
     console.log(getParentPosition()?.top, getParentPosition()?.left)
     return (
