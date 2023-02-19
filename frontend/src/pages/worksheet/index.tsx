@@ -19,6 +19,7 @@ export const Worksheet = () => {
     new Id("worksheets", ws_id)
   );
   const [didUpdateBoundingBoxes, setUpdateBoundingBoxes] = useState(false);
+  const [startLabelling, setStartLabelling] = useState(false);
 
   useInterval(() => {
     if (worksheet && worksheet.labelling_done) {
@@ -32,7 +33,7 @@ export const Worksheet = () => {
       {didUpdateBoundingBoxes ? (
         <WorksheetSubmissions />
       ) : (
-        <WorksheetLabelling />
+        <WorksheetLabelling startLabelling={() => setStartLabelling(true)} />
       )}
     </div>
   );
