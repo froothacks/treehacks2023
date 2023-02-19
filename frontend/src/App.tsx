@@ -12,7 +12,6 @@ export const App = () => {
     return (
         <div className="App" style={{height: "100vh"}}>
             {/* <Header/> */}
-            <h1>hi</h1>
             <div style={{height: "calc(100% - 60px)", display: "flex", flexDirection: "column"}}>
                 <div style={{height: "100%"}}>
                     <Routes>
@@ -22,7 +21,7 @@ export const App = () => {
                         <Route path={RouteName.SUBMISSION} element={<Submission/>}/>
                     </Routes>
                 </div>
-                <Footer/>
+                {/* <Footer/> */}
             </div>
         </div>
     );
