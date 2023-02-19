@@ -149,6 +149,9 @@ function WorksheetLabeller({
                   intersecting={checkIntersecting(i)}
                   getParentPosition={getParentPosition}
                   deleteIfDeleteMode={deleteIfDeleteMode}
+                  ans={""}
+                  correct
+                  readOnly = {false}
                 />
               );
             })}
