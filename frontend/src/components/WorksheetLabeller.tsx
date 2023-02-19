@@ -10,7 +10,7 @@ export interface BoundingBoxType {
 }
 
 function submit(boxes: Array<BoundingBoxType>, worksheetId: string) {
-    fetch("http://localhost:5000/ab", {
+    fetch("http://localhost:5001/ab", {
         method: "POST", body: JSON.stringify({
             boundingBoxes: boxes,
             worksheetId: worksheetId

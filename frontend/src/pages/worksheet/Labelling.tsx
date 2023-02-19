@@ -23,7 +23,7 @@ export const WorksheetLabelling = () => {
 
   useEffect(() => {
     const getBoundingBoxes = async () => {
-      const boundingBoxes = await fetch("http://127.0.0.1:5000/bb", {
+      const boundingBoxes = await fetch("http://127.0.0.1:5001/bb", {
         method: "POST",
         mode: "cors",
         body: JSON.stringify({
