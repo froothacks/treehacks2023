@@ -6,6 +6,7 @@ import "./index.css";
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { ChakraProvider } from "@chakra-ui/react";
 import { theme } from "./theme";
+import { AuthContextProvider } from "./contexts/AuthContext";
 
 const address = process.env.REACT_APP_CONVEX_URL ?? "";
 
@@ -19,7 +20,9 @@ root.render(
     <BrowserRouter>
       <ConvexProvider client={convex}>
         <ChakraProvider theme={theme}>
-          <App />
+          <AuthContextProvider>
+            <App />
+          </AuthContextProvider>
         </ChakraProvider>
       </ConvexProvider>
     </BrowserRouter>

@@ -14,6 +14,7 @@ import {
   useColorModeValue,
   useBreakpointValue,
   useDisclosure,
+  Avatar,
 } from "@chakra-ui/react";
 import {
   HamburgerIcon,
@@ -22,9 +23,12 @@ import {
   ChevronRightIcon,
 } from "@chakra-ui/icons";
 import { LogoIcon } from "src/static";
+import { useAuthContext } from "src/contexts/AuthContext";
+import { RouteName } from "src/constants/routes";
 
 export const Header = () => {
   const { isOpen, onToggle } = useDisclosure();
+  const { isAuthenticated } = useAuthContext();
 
   return (
     <Box>
@@ -61,36 +65,40 @@ export const Header = () => {
           </Flex>
         </Flex>
 
-        <Stack
-          flex={{ base: 1, md: 0 }}
-          justify={"flex-end"}
-          direction={"row"}
-          spacing={6}
-        >
-          <Button
-            as={"a"}
-            fontSize={"sm"}
-            fontWeight={400}
-            variant={"link"}
-            href={"#"}
+        {!isAuthenticated ? (
+          <Stack
+            flex={{ base: 1, md: 0 }}
+            justify={"flex-end"}
+            direction={"row"}
+            spacing={6}
           >
-            Sign In
-          </Button>
-          <Button
-            as={"a"}
-            display={{ base: "none", md: "inline-flex" }}
-            fontSize={"sm"}
-            fontWeight={600}
-            color={"white"}
-            bg={"pink.400"}
-            href={"#"}
-            _hover={{
-              bg: "pink.300",
-            }}
-          >
-            Sign Up
-          </Button>
-        </Stack>
+            <Button
+              as={"a"}
+              fontSize={"sm"}
+              fontWeight={400}
+              variant={"link"}
+              href={"#"}
+            >
+              Sign In
+            </Button>
+            <Button
+              as={"a"}
+              display={{ base: "none", md: "inline-flex" }}
+              fontSize={"sm"}
+              fontWeight={600}
+              color={"white"}
+              bg={"pink.400"}
+              href={"#"}
+              _hover={{
+                bg: "pink.300",
+              }}
+            >
+              Sign Up
+            </Button>
+          </Stack>
+        ) : (
+          <Avatar bg="green.900" size={"sm"} />
+        )}
       </Flex>
 
       <Collapse in={isOpen} animateOpacity>
@@ -104,10 +112,12 @@ const DesktopNav = () => {
   const linkColor = useColorModeValue("gray.600", "gray.200");
   const linkHoverColor = useColorModeValue("gray.800", "white");
   const popoverContentBgColor = useColorModeValue("white", "gray.800");
+  const { isAuthenticated } = useAuthContext();
+  const menuItems = isAuthenticated ? NAV_DASHBOARD_ITEMS : NAV_HOME_ITEMS;
 
   return (
     <Stack direction={"row"} spacing={4} alignItems="center">
-      {NAV_ITEMS.map((navItem) => (
+      {menuItems.map((navItem) => (
         <Box key={navItem.label}>
           <Popover trigger={"hover"} placement={"bottom-start"}>
             <PopoverTrigger>
@@ -187,13 +197,16 @@ const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
 };
 
 const MobileNav = () => {
+  const { isAuthenticated } = useAuthContext();
+  const menuItems = isAuthenticated ? NAV_DASHBOARD_ITEMS : NAV_HOME_ITEMS;
+
   return (
     <Stack
       bg={useColorModeValue("white", "gray.800")}
       p={4}
       display={{ md: "none" }}
     >
-      {NAV_ITEMS.map((navItem) => (
+      {menuItems.map((navItem) => (
         <MobileNavItem key={navItem.label} {...navItem} />
       ))}
     </Stack>
@@ -260,36 +273,14 @@ interface NavItem {
   href?: string;
 }
 
-const NAV_ITEMS: Array<NavItem> = [
+const NAV_HOME_ITEMS: Array<NavItem> = [
   {
     label: "Product",
-    children: [
-      {
-        label: "Explore Design Work",
-        subLabel: "Trending Design to inspire you",
-        href: "#",
-      },
-      {
-        label: "New & Noteworthy",
-        subLabel: "Up-and-coming Designers",
-        href: "#",
-      },
-    ],
+    href: "#",
   },
   {
     label: "Pricing",
-    children: [
-      {
-        label: "Job Board",
-        subLabel: "Find your dream design job",
-        href: "#",
-      },
-      {
-        label: "Freelance Projects",
-        subLabel: "An exclusive list for contract work",
-        href: "#",
-      },
-    ],
+    href: "#",
   },
   {
     label: "Resources",
@@ -298,5 +289,20 @@ const NAV_ITEMS: Array<NavItem> = [
   {
     label: "Support",
     href: "#",
+  },
+];
+
+const NAV_DASHBOARD_ITEMS: Array<NavItem> = [
+  {
+    label: "Worksheets",
+    href: RouteName.WORKSHEETS,
+  },
+  {
+    label: "Classes",
+    href: RouteName.CLASSES,
+  },
+  {
+    label: "Students",
+    href: RouteName.STUDENTS,
   },
 ];
