@@ -16,6 +16,9 @@ import {
   FormLabel,
   Spacer,
   Input,
+  Box,
+  Heading,
+  Spinner,
 } from "@chakra-ui/react";
 import { Id } from "src/convex/_generated/dataModel";
 
@@ -24,6 +27,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { BaseRoute, QueryParams } from "src/constants/routes";
 import { useMutation, useQuery } from "src/convex/_generated/react";
 import { useUploadImage } from "src/hooks/api";
+import { AddIcon } from "@chakra-ui/icons";
+import styled from "@emotion/styled";
+import { Section } from "src/components/Section";
+import { useInterval } from "usehooks-ts";
 
 type UploadWorksheetsProps = {
   worksheet_id: string;
@@ -62,9 +69,9 @@ const UploadSubmissionModal: React.FC<UploadWorksheetsProps> = ({
       setSubmissions(null);
 
       onClose();
-      if (res.length == 1) {
-        navigate(`${BaseRoute.SUBMISSIONS}/${res[0]}`);
-      }
+      // if (res.length == 1) {
+      //   navigate(`${BaseRoute.SUBMISSIONS}/${res[0]}`);
+      // }
     }
   };
   return (
@@ -72,8 +79,7 @@ const UploadSubmissionModal: React.FC<UploadWorksheetsProps> = ({
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Create Submission</ModalHeader>
-          <ModalCloseButton />
+          <ModalHeader>Upload Submission</ModalHeader>
           <ModalBody>
             <FormControl>
               <FormLabel>Student ID</FormLabel>
@@ -90,22 +96,28 @@ const UploadSubmissionModal: React.FC<UploadWorksheetsProps> = ({
             </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Button
-              mr={4}
-              disabled={!submissions?.length}
-              onClick={handleCreateSubmission}
-              variant={""}
-            >
-              <Text>Upload Submission</Text>
+            <Button onClick={onClose} mr={4} variant="outline">
+              Close
             </Button>
-
-            <Button onClick={onClose}>Close</Button>
+            <Button
+              disabled={(submissions?.length ?? 0) > 0}
+              onClick={handleCreateSubmission}
+            >
+              <Text>Upload</Text>
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
     </>
   );
 };
+
+const MotionCard = styled(Card)`
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    transform: scale(1.01);
+  }
+`;
 
 export const WorksheetSubmissions = () => {
   const params = useParams();
@@ -121,6 +133,8 @@ export const WorksheetSubmissions = () => {
 
   console.log({ worksheet });
 
+  console.log({ submissions });
+
   const startGrading = () => {
     console.log(ws_id);
     fetch("http://localhost:5001/start_grading", {
@@ -131,26 +145,47 @@ export const WorksheetSubmissions = () => {
     });
   };
 
-  return (
-    <div>
-      <Button onClick={onOpen}>Add submission</Button>
-      <Spacer w={4} />
-      <Button onClick={startGrading}>Start Grading</Button>
+  useInterval(() => {
+    if (worksheet) {
+      console.log({ worksheet });
+    }
+  }, 1000);
 
-      <List spacing={3}>
+  return (
+    <Section>
+      <Box display={"flex"} justifyContent="space-between">
+        <Heading>Submissions</Heading>
+        <Box display="flex">
+          <Button onClick={onOpen} leftIcon={<AddIcon boxSize={3} />}>
+            <Text>Create</Text>
+          </Button>
+          <Spacer w={4} />
+          <Button onClick={startGrading}>Start Grading</Button>
+        </Box>
+      </Box>
+      <Spacer h={6} />
+
+      <List spacing={4}>
         {submissions.map((sub: any) => {
           const id = sub._id.id;
+          const status = sub.ocr_status;
           return (
             <ListItem>
-              <Card>
-                <Link
-                  onClick={() => navigate(`${BaseRoute.SUBMISSIONS}/${id}`)}
-                >
-                  <CardBody>
-                    <Text>{`Submission ${id}`}</Text>
-                  </CardBody>
-                </Link>
-              </Card>
+              <MotionCard key={id} boxShadow="lg" borderRadius={16}>
+                <CardBody>
+                  <Box display={"flex"} justifyContent="space-between">
+                    <Text>Advait's Submission</Text>
+                    {status === "processing" ? (
+                      <Box display={"flex"} alignItems="center">
+                        <Text mr="3">Grading</Text>
+                        <Spinner size={"sm"} />
+                      </Box>
+                    ) : status === "finished" ? (
+                      <Text>Score: {}</Text>
+                    ) : null}
+                  </Box>
+                </CardBody>
+              </MotionCard>
             </ListItem>
           );
         })}
@@ -160,6 +195,6 @@ export const WorksheetSubmissions = () => {
         onClose={onClose}
         worksheet_id={ws_id}
       />
-    </div>
+    </Section>
   );
 };

@@ -25,6 +25,8 @@ def get_answers(image, worksheetId, bboxs):
     for i in range(len(bboxs)):
         bboxs[i]["text_answer"] = response[i]
         client.mutation("sendMessage:createBoundingBoxes", {"worksheetID": worksheetId, "box": bboxs[i]})
+    client.mutation("sendMessage:updateWorksheetLabelling", worksheetId)
+
 
 
 def get_img(url):
@@ -70,10 +72,12 @@ class StartGrading(Resource):
         worksheetId = json_data['worksheetId']
         submissions = client.query("listMessages:getAllSubmissionsForWorksheet", worksheetId)
         boundingboxes = client.query("listMessages:getBB", worksheetId)
-        print(submissions)
-        print(boundingboxes)
 
         submittedFiles = map(lambda x: x['submission_file_url'], submissions)
+
+        for subId, subFile in enumerate(submittedFiles):
+            client.mutation("sendMessage:startMarkingSubmission", submissions[subId]['_id'].id)
+
         for subId, subFile in enumerate(submittedFiles):
             aImage = get_img(subFile)
             aImageAnswers = bbParser.get_text_for_bounding_boxes(aImage, boundingboxes)
