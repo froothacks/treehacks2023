@@ -1,15 +1,14 @@
-import threading
-from multiprocessing import Process
 from pprint import pprint
 
 import cv2
+import numpy as np
 import requests
 from convex import ConvexClient
 from flask import Flask, request
 from flask_restful import Resource, Api
+
 from config import url as convex_url
 from parser import Parser
-import numpy as np
 
 app = Flask(__name__)
 api = Api(app)
@@ -46,5 +45,3 @@ api.add_resource(BoundingBoxService, '/bb')
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
