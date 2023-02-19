@@ -19,10 +19,10 @@ import { query } from "./_generated/server";
 
 export const getAllWorksheets = query(async ({ db, storage }) => {
     const worksheets = await db.query("worksheets").collect();
-    for (const worksheet of worksheets) {
-        worksheet.answer_url = await storage.getUrl(worksheet.answer_url);
-        worksheet.blank_url = await storage.getUrl(worksheet.blank_url);
-    }
+    // for (const worksheet of worksheets) {
+    //     worksheet.answer_url = await storage.getUrl(worksheet.answer_url);
+    //     worksheet.blank_url = await storage.getUrl(worksheet.blank_url);
+    // }
     return worksheets;
 });
 
@@ -32,9 +32,9 @@ export const getWorksheet = query(async ({ db }, worksheetID) => {
 
 export const getAllSubmissions = query(async ({ db, storage }) => {
     const submissions = await db.query("submissions").collect();
-    for (const submission of submissions) {
-        submission.submission_file_url = await storage.getUrl(submission.submission_file_url);
-    }
+    // for (const submission of submissions) {
+    //     submission.submission_file_url = await storage.getUrl(submission.submission_file_url);
+    // }
     return submissions;
 });
 

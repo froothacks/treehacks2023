@@ -13,7 +13,7 @@ function Image({message}: { message: any }) {
 
 
 export const Home = () => {
-    const worksheets = useQuery("listMessages:getAllWorksheets") || [];
+    const getAllWorksheets = useQuery("listMessages:getAllWorksheets") || [];
 
     // const data = useQuery("listMessages");
     const sendMessage = useMutation("sendMessage:sendMessage");
@@ -86,6 +86,15 @@ export const Home = () => {
 
     return (
         <div>
+              <ul>
+            {getAllWorksheets.map((worksheet: any) => (
+                    <li key={worksheet._id.toString()}>
+                      <span>{worksheet.name}:</span>
+                      <Image message={worksheet.answer_url} />
+                      <span>{new Date(worksheet._creationTime).toLocaleTimeString()}</span>
+                    </li>
+                  ))}
+            </ul>
             <h1 className="text-3xl font-bold underline">Hello world!</h1>
             <button onClick={sendHello}>click me!</button>
             <form onSubmit={handleSendImage}>
