@@ -36,6 +36,7 @@ import { BaseRoute } from "src/constants/routes";
 import { useUploadImage } from "src/hooks/api";
 import { useMutation, useQuery } from "src/convex/_generated/react";
 import { AddIcon, PlusSquareIcon } from "@chakra-ui/icons";
+import styled from "@emotion/styled";
 
 type UploadWorksheetsProps = {
   onClose: () => void;
@@ -144,6 +145,14 @@ const UploadWorksheetsModal: React.FC<UploadWorksheetsProps> = ({
     </>
   );
 };
+
+const MotionCard = styled(Card)`
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    transform: scale(1.08);
+  }
+`;
+
 export const Worksheets = () => {
   const navigate = useNavigate();
 
@@ -163,14 +172,14 @@ export const Worksheets = () => {
         </Box>
         <Spacer h={10} />
         <SimpleGrid
-          spacingX={4}
-          spacingY={8}
+          spacingX={6}
+          spacingY={10}
           templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
         >
           {worksheets.map((ws: any) => {
             const id = ws._id.id;
             return (
-              <Card key={id}>
+              <MotionCard key={id} boxShadow="lg" borderRadius={16}>
                 <CardHeader>
                   <Heading size="md">{ws.name}</Heading>
                 </CardHeader>
@@ -189,7 +198,7 @@ export const Worksheets = () => {
                     <Text>View</Text>
                   </Button>
                 </CardFooter>
-              </Card>
+              </MotionCard>
             );
           })}
         </SimpleGrid>
