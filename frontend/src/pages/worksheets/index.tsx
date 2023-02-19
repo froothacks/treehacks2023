@@ -53,30 +53,13 @@ const UploadWorksheetsModal: React.FC<UploadWorksheetsProps> = ({
     const answerKeyWorksheetID = await uploadImage(answerKey);
     const blankWorksheetID = await uploadImage(blankWorksheet);
 
-    const { worksheetId, answerURL, blankURL } = await createWorksheet(
+    const { worksheetId } = await createWorksheet(
       name,
       "asx35pHuC8dhWHrhZ-lLzg",
       "temp_date",
       answerKeyWorksheetID,
       blankWorksheetID
     );
-    const boundingBoxes = await fetch(
-      "https://agile-mole-403.convex.cloud/bb",
-      {
-        method: "POST",
-        mode: "cors",
-        body: JSON.stringify({
-          ans_url: answerURL,
-          blank_url: blankURL,
-        }),
-      }
-    );
-
-    console.log({ boundingBoxes });
-
-    const data = await boundingBoxes.json();
-
-    console.log({ data });
 
     // cleanup
     setAnswerKey(undefined);
