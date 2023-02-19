@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Box, Spinner } from "@chakra-ui/react";
+import { Box, SkeletonText, Spinner } from "@chakra-ui/react";
 import WorksheetLabeller, {
   BoundingBoxType,
 } from "src/components/WorksheetLabeller";
@@ -8,8 +8,14 @@ import { Id } from "src/convex/_generated/dataModel";
 import { useNavigate, useParams } from "react-router-dom";
 import { BaseRoute, QueryParams } from "src/constants/routes";
 import { useQuery } from "src/convex/_generated/react";
+import { Section } from "src/components/Section";
 
-export const WorksheetLabelling = () => {
+type WorksheetLabellingProps = {
+  startLabelling: () => void;
+};
+export const WorksheetLabelling: React.FC<WorksheetLabellingProps> = ({
+  startLabelling,
+}) => {
   const params = useParams();
   const ws_id = params[QueryParams.WORKSHEET_ID] ?? "";
   const worksheet = useQuery(
@@ -43,9 +49,14 @@ export const WorksheetLabelling = () => {
         boxesInput={boxes}
         ansURL={worksheet.answer_url}
         worksheetId={ws_id}
+        startLabelling={startLabelling}
       />
     </Box>
   ) : (
-    <Spinner />
+    <Section>
+      <Box padding="6" boxShadow="2xl" bg="white">
+        <SkeletonText mt="4" noOfLines={16} spacing="8" skeletonHeight="4" />
+      </Box>
+    </Section>
   );
 };

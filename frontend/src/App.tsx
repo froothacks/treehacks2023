@@ -22,7 +22,14 @@ export const App = () => {
       >
         <div style={{ height: "100%" }}>
           <Routes>
-            <Route path={RouteName.HOME} element={<Home />} />
+            <Route
+              path={RouteName.HOME}
+              element={
+                <ProtectedRoute>
+                  <Worksheets />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path={RouteName.WORKSHEETS}
               element={
