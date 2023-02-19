@@ -17,9 +17,6 @@ export const Submission = () => {
         new Id("submissions", sub_id ?? "")
     );
 
-    console.log(submission);
-
-
     return (
         <Section style={{height: "100%"}}>
             <div className="Submission ">Submission</div>
