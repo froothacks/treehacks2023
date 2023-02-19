@@ -20,6 +20,7 @@ import {
   FormLabel,
   FormErrorMessage,
   FormHelperText,
+  Spacer,
 } from "@chakra-ui/react";
 
 import { Card, CardHeader, CardBody, CardFooter, Text } from "@chakra-ui/react";
@@ -28,6 +29,7 @@ import { useNavigate } from "react-router";
 import { BaseRoute } from "src/constants/routes";
 
 import { useUploadImage } from "src/hooks/api";
+import { useMutation } from "src/convex/_generated/react";
 
 type UploadWorksheetsProps = {
   onClose: () => void;
@@ -39,19 +41,30 @@ const UploadWorksheetsModal: React.FC<UploadWorksheetsProps> = ({
   onClose,
 }) => {
   const uploadImage = useUploadImage();
+  const createWorksheet = useMutation("sendMessage:createWorksheet");
 
   const imageInput = useRef(null);
+  const [name, setName] = useState("");
   const [answerKey, setAnswerKey] = useState<File>();
-  const [emptySheet, setEmptySheet] = useState<File>();
+  const [blankWorksheet, setBlankWorksheet] = useState<File>();
 
-  const handleSendImage = () => {
-    onClose();
-    uploadImage(answerKey);
-    uploadImage(emptySheet);
+  const handleCreateWorksheet = async () => {
+    const answerKeyWorksheetID = await uploadImage(answerKey);
+    const blankWorksheetID = await uploadImage(blankWorksheet);
+
+    await createWorksheet(
+      name,
+      "asx35pHuC8dhWHrhZ-lLzg",
+      "temp_date",
+      answerKeyWorksheetID,
+      blankWorksheetID
+    );
 
     // cleanup
     setAnswerKey(undefined);
-    setEmptySheet(undefined);
+    setBlankWorksheet(undefined);
+
+    onClose();
   };
 
   return (
@@ -59,20 +72,23 @@ const UploadWorksheetsModal: React.FC<UploadWorksheetsProps> = ({
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
+          <ModalHeader>Create Worksheet</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl>
+              <FormLabel>Worksheet Name</FormLabel>
+              <Input value={name} onChange={(e) => setName(e.target.value)} />
+              <Spacer h={8} />
               <FormLabel>Upload Empty Worksheet</FormLabel>
               <Input
                 type="file"
                 accept="image/*"
                 ref={imageInput}
-                onChange={(event) => setEmptySheet(event.target.files?.[0])}
+                onChange={(event) => setBlankWorksheet(event.target.files?.[0])}
                 className="ms-2 btn btn-primary"
-                disabled={!!emptySheet}
               />
               <FormHelperText>Please upload a blank worksheet</FormHelperText>
+              <Spacer h={8} />
               <FormLabel>Upload Answer Sheet</FormLabel>
               <Input
                 type="file"
@@ -80,18 +96,20 @@ const UploadWorksheetsModal: React.FC<UploadWorksheetsProps> = ({
                 ref={imageInput}
                 onChange={(event) => setAnswerKey(event.target.files?.[0])}
                 className="ms-2 btn btn-primary"
-                disabled={!!answerKey}
               />
               <FormHelperText>Please upload your answer key</FormHelperText>
-              <Button
-                disabled={!answerKey || !emptySheet}
-                onClick={handleSendImage}
-              >
-                <Text>Upload Worksheet</Text>
-              </Button>
+              <Spacer h={8} />
             </FormControl>
           </ModalBody>
           <ModalFooter>
+            <Button mr={4}
+              disabled={!answerKey || !blankWorksheet}
+              onClick={handleCreateWorksheet}
+              variant={''}
+            >
+              <Text>Upload Worksheet</Text>
+            </Button>
+
             <Button onClick={onClose}>Close</Button>
           </ModalFooter>
         </ModalContent>
