@@ -102,10 +102,11 @@ const UploadWorksheetsModal: React.FC<UploadWorksheetsProps> = ({
             </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Button mr={4}
+            <Button
+              mr={4}
               disabled={!answerKey || !blankWorksheet}
               onClick={handleCreateWorksheet}
-              variant={''}
+              variant={""}
             >
               <Text>Upload Worksheet</Text>
             </Button>
@@ -129,22 +130,43 @@ export const Worksheets = () => {
 
   return (
     <div className="Worksheets">
-      <Button onClick={handleUploadWorksheet}>Add worksheet</Button>
-
       <Section>
-        <List spacing={6}>
-          {Array.from(Array(30).keys()).map((id) => (
-            <ListItem>
-              <Card>
-                <Link onClick={() => navigate(`${BaseRoute.WORKSHEETS}/${id}`)}>
-                  <CardBody>
-                    <Text>{`Worksheet ${id}`}</Text>
-                  </CardBody>
-                </Link>
-              </Card>
-            </ListItem>
-          ))}
-        </List>
+        <Button onClick={handleUploadWorksheet}>Add worksheet</Button>
+
+        {state === "labelling" && (
+          <List spacing={6}>
+            {Array.from(Array(30).keys()).map((id) => (
+              <ListItem>
+                <Card>
+                  <Link
+                    onClick={() => navigate(`${BaseRoute.WORKSHEETS}/${id}`)}
+                  >
+                    <CardBody>
+                      <Text>{`Worksheet ${id}`}</Text>
+                    </CardBody>
+                  </Link>
+                </Card>
+              </ListItem>
+            ))}
+          </List>
+        )}
+        {state === "done" && (
+          <List spacing={6}>
+            {Array.from(Array(30).keys()).map((id) => (
+              <ListItem>
+                <Card>
+                  <Link
+                    onClick={() => navigate(`${BaseRoute.WORKSHEETS}/${id}`)}
+                  >
+                    <CardBody>
+                      <Text>{`Worksheet ${id}`}</Text>
+                    </CardBody>
+                  </Link>
+                </Card>
+              </ListItem>
+            ))}
+          </List>
+        )}
       </Section>
       <UploadWorksheetsModal isOpen={isOpen} onClose={onClose} />
     </div>
