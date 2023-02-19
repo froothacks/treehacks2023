@@ -48,7 +48,9 @@ export const getSubmission = query(async ({db}, submissionID) => {
 });
 
 export const getBB = query(async ({db},worksheetID ) => {
+    console.log(worksheetID);
     const submissions = await db.query("boundingboxes").filter(q => q.eq(q.field( "worksheetID"), worksheetID)).collect()
+    console.log(submissions);
     return submissions
 })
 

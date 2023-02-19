@@ -16,16 +16,18 @@ export const Submission = () => {
         "listMessages:getSubmission",
         new Id("submissions", sub_id ?? "")
     );
-    const boxes = useQuery(
-        "listMessage:getBB",
-        new Id("worksheets",submission.worksheet_id)
-    )
+
+    console.log(submission);
+
 
     return (
         <Section style={{height: "100%"}}>
             <div className="Submission ">Submission</div>
-            {submission && <Text>ID: {submission._id.id}</Text>}
-        <WorksheetDisplay boxes={boxes} submission={submission}/>
+            {submission && <>
+                <Text>ID: {submission._id.id}</Text>
+                <WorksheetDisplay submission={submission}/>
+            </>
+            }
         </Section>
     );
 };
