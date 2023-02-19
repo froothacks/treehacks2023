@@ -145,11 +145,7 @@ export const WorksheetSubmissions = () => {
     });
   };
 
-  useInterval(() => {
-    if (worksheet) {
-      console.log({ worksheet });
-    }
-  }, 1000);
+  console.log(worksheet.totalScore.toString())
 
   return (
     <Section>
@@ -181,7 +177,7 @@ export const WorksheetSubmissions = () => {
                         <Spinner size={"sm"} />
                       </Box>
                     ) : status === "finished" ? (
-                      <Text>Score: {}</Text>
+                      <Text>Score: {sub.totalScore.toString()} / {worksheet.totalScore.toString()}</Text>
                     ) : null}
                   </Box>
                 </CardBody>
