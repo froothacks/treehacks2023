@@ -26,6 +26,7 @@ import {
   Heading,
   HStack,
   Box,
+  SkeletonText,
 } from "@chakra-ui/react";
 
 import { Card, CardHeader, CardBody, CardFooter, Text } from "@chakra-ui/react";
@@ -156,10 +157,12 @@ const MotionCard = styled(Card)`
 export const Worksheets = () => {
   const navigate = useNavigate();
 
-  const worksheets = useQuery("listMessages:getAllWorksheets") ?? [];
+  const worksheets = useQuery("listMessages:getAllWorksheets");
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  console.log({ worksheets });
+  // console.log({ worksheets });
+
+  // const worksheets = undefined;
 
   return (
     <div className="Worksheets">
@@ -176,31 +179,39 @@ export const Worksheets = () => {
           spacingY={10}
           templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
         >
-          {worksheets.map((ws: any) => {
-            const id = ws._id.id;
-            return (
-              <MotionCard key={id} boxShadow="lg" borderRadius={16}>
-                <CardHeader>
-                  <Heading size="md">{ws.name}</Heading>
-                </CardHeader>
-                <CardBody>
-                  <Text>Class: Gr8-Math</Text>
-                  <Text>Students: 35</Text>
-                  <Text>Due: 13/02/2022</Text>
-                </CardBody>
-                <CardFooter>
-                  <Button
-                    onClick={() => navigate(`${BaseRoute.WORKSHEETS}/${id}`)}
-                    variant={"solid"}
-                    size="md"
-                    width={"100%"}
-                  >
-                    <Text>View</Text>
-                  </Button>
-                </CardFooter>
-              </MotionCard>
-            );
-          })}
+          {worksheets
+            ? worksheets.map((ws: any) => {
+                const id = ws._id.id;
+                return (
+                  <MotionCard key={id} boxShadow="lg" borderRadius={16}>
+                    <CardHeader>
+                      <Heading size="md">{ws.name}</Heading>
+                    </CardHeader>
+                    <CardBody>
+                      <Text>Class: Gr8-Math</Text>
+                      <Text>Students: 35</Text>
+                      <Text>Due: 13/02/2022</Text>
+                    </CardBody>
+                    <CardFooter>
+                      <Button
+                        onClick={() =>
+                          navigate(`${BaseRoute.WORKSHEETS}/${id}`)
+                        }
+                        variant={"solid"}
+                        size="md"
+                        width={"100%"}
+                      >
+                        <Text>View</Text>
+                      </Button>
+                    </CardFooter>
+                  </MotionCard>
+                );
+              })
+            : Array.from(Array(16).keys()).map(() => (
+                <Box padding="6" boxShadow="lg" borderRadius={16} bg="white">
+                  <SkeletonText mt="4" noOfLines={6} spacing="4" />
+                </Box>
+              ))}
         </SimpleGrid>
       </Section>
       <UploadWorksheetsModal isOpen={isOpen} onClose={onClose} />
