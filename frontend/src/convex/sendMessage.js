@@ -36,7 +36,7 @@ export const createWorksheet = mutation(async ({db, storage}, name, teacherID, d
     return {worksheetId: worksheetId.id, answerURL, blankURL}
 });
 
-export const createSubmission = mutation(async ({db, storage}, worksheetId, submissionFileID) => {
+export const createSubmission = mutation(async ({db, storage}, worksheetID, submissionFileID) => {
     // const answerURL = await storage.getUrl(answerID);
     const submissionFileURL = await storage.getUrl(submissionFileID);
     const submission = {worksheet_id: worksheetID, submission_file_url: submissionFileURL};
