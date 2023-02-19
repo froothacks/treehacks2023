@@ -1,4 +1,4 @@
-import { query } from "./_generated/server";
+import {query} from "./_generated/server";
 
 // export default query(async ({ db, storage }) => {
 //   const messages = await db.query("worksheets").collect();
@@ -17,7 +17,7 @@ import { query } from "./_generated/server";
 //   return messages;
 // });
 
-export const getAllWorksheets = query(async ({ db, storage }) => {
+export const getAllWorksheets = query(async ({db, storage}) => {
     const worksheets = await db.query("worksheets").collect();
     // for (const worksheet of worksheets) {
     //     worksheet.answer_url = await storage.getUrl(worksheet.answer_url);
@@ -26,11 +26,11 @@ export const getAllWorksheets = query(async ({ db, storage }) => {
     return worksheets;
 });
 
-export const getWorksheet = query(async ({ db }, worksheetID) => {
+export const getWorksheet = query(async ({db}, worksheetID) => {
     return await db.get(worksheetID);
 });
 
-export const getAllSubmissions = query(async ({ db, storage }) => {
+export const getAllSubmissions = query(async ({db, storage}) => {
     const submissions = await db.query("submissions").collect();
     // for (const submission of submissions) {
     //     submission.submission_file_url = await storage.getUrl(submission.submission_file_url);
@@ -38,9 +38,18 @@ export const getAllSubmissions = query(async ({ db, storage }) => {
     return submissions;
 });
 
-export const getSubmission = query(async ({ db }, submissionID) => {
+export const getAllSubmissionsForWorksheet = query(async ({db}, worksheetID) => {
+    const submissions = db.query("submissions").filter(q => q.eq(q.field("worksheet_id"), worksheetID)).collect()
+    return submissions
+})
+export const getSubmission = query(async ({db}, submissionID) => {
     return await db.get(submissionID);
 });
+
+export const getBB = query(async ({db},worksheetID ) => {
+    const submissions = db.query("boundingboxes").filter(q => q.eq(q.field("worksheet_id"), worksheetID)).collect()
+    return submissions
+})
 
 export const getWorksheetURLs = query(async ({ db }, worksheetId) => {
   const worksheet = await db.get(worksheetId)

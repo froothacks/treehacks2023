@@ -1,5 +1,5 @@
-import { mutation } from "./_generated/server";
-import { query } from "./_generated/server";
+import {mutation} from "./_generated/server";
+import {Id} from "./_generated/dataModel";
 
 // export default mutation(async ({ db }, body, author) => {
 //   const message = { body: body, author: author, test1: "test2" };
@@ -60,3 +60,8 @@ export const createBoundingBoxes = mutation(
     );
   }
 );
+
+export const markSubmission = mutation(async ({db}, submissionID, feedbacks) => {
+    const id = new Id("submissions", submissionID)
+    return await db.patch(id, {feedbacks})
+})
