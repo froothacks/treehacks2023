@@ -7,6 +7,7 @@ import { useMutation, useQuery } from "src/convex/_generated/react";
 import { WorksheetSubmissions } from "./Submissions";
 import { WorksheetLabelling } from "./Labelling";
 import { Section } from "src/components/Section";
+import { Button } from "@chakra-ui/react";
 
 const usePollingUpdate = (pollingFunction: () => void, interval: number) => {
   const [subscription, setSubscription] = useState(null);
@@ -30,16 +31,6 @@ export const Worksheet = () => {
   );
   const [didUpdateBoundingBoxes, setUpdateBoundingBoxes] = useState(false);
 
-    const startGrading = () => {
-        console.log(ws_id);
-        fetch("http://localhost:5000/start_grading", {
-            method: "POST",
-            body: JSON.stringify({
-                worksheetId: ws_id
-            })
-        })
-    }
-
   usePollingUpdate(() => {
     if (worksheet && worksheet.ocr_done) {
       setUpdateBoundingBoxes(true);
@@ -48,7 +39,10 @@ export const Worksheet = () => {
 
   return (
     <Section>
-      {didUpdateBoundingBoxes || true ? (
+      <Button onClick={() => setUpdateBoundingBoxes((prev) => !prev)}>
+        Toggle
+      </Button>
+      {didUpdateBoundingBoxes ? (
         <WorksheetSubmissions />
       ) : (
         <WorksheetLabelling />
