@@ -8,6 +8,7 @@ import {
   Link,
   useDisclosure,
   Button,
+  Box,
 } from "@chakra-ui/react";
 
 import { Card, CardHeader, CardBody, CardFooter, Text } from "@chakra-ui/react";
@@ -52,7 +53,9 @@ export const Worksheet = () => {
             </List>
           </div>
         ) : (
-          <WorksheetLabeller />
+          <Box pb={8}>
+            <WorksheetLabeller />
+          </Box>
         )}
       </div>
     </Section>

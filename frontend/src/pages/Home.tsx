@@ -53,31 +53,25 @@ export const Home = () => {
     event.preventDefault();
     const answerKeyWorksheetID = await uploadToStorage(answerKey);
     const blankWorksheetID = await uploadToStorage(blankWorksheet);
-
-    await createWorksheet(
+    const { worksheetId, answerURL, blankURL } = await createWorksheet(
       "worksheet_name",
       "asx35pHuC8dhWHrhZ-lLzg",
       "temp_date",
       answerKeyWorksheetID,
       blankWorksheetID
     );
+    const boundingBoxes = await fetch("http://127.0.0.1:5000/bb", {
+      method: "POST",
+      mode: "cors",
+      body: JSON.stringify({
+        ans_url: answerURL,
+        blank_url: blankURL,
+      }),
+    });
+    const data = await boundingBoxes.json();
     setBlankWorksheet(null);
     setAnswerKey(null);
   }
-
-  // <ul>
-  // {messages.map((message: any) => (
-  //          <li key={message._id.toString()}>
-  //            <span>{message.author}:</span>
-  //            {message.format === "image" ? (
-  //              <Image message={message} />
-  //            ) : (
-  //              <span>{message.body}</span>
-  //            )}
-  //            <span>{new Date(message._creationTime).toLocaleTimeString()}</span>
-  //          </li>
-  //        ))}
-  // </ul>
 
   return (
     <div>
@@ -112,4 +106,6 @@ export const Home = () => {
       </form>
     </div>
   );
+  setBlankWorksheet(null);
+  setAnswerKey(null);
 };
