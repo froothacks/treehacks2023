@@ -56,8 +56,16 @@ export const Home = () => {
         event.preventDefault();
         const answerKeyWorksheetID = await uploadToStorage(answerKey);
         const blankWorksheetID = await uploadToStorage(blankWorksheet);
-
-        await createWorksheet("worksheet_name", "asx35pHuC8dhWHrhZ-lLzg", "temp_date", answerKeyWorksheetID, blankWorksheetID)
+        const {worksheetId, answerURL, blankURL} = await createWorksheet("worksheet_name", "asx35pHuC8dhWHrhZ-lLzg", "temp_date", answerKeyWorksheetID, blankWorksheetID)
+        const boundingBoxes = await fetch("http://127.0.0.1:5000/bb", {
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify({
+                ans_url: answerURL,
+                blank_url: blankURL,
+            })
+        })
+        const data = await boundingBoxes.json()
         setBlankWorksheet(null);
         setAnswerKey(null);
     }
