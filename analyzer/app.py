@@ -103,4 +103,4 @@ api.add_resource(AddBoundingBoxesService, '/ab')
 api.add_resource(StartGrading, '/start_grading')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=5001, debug=True)

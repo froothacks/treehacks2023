@@ -35,10 +35,10 @@ export const Worksheet = () => {
     if (worksheet && worksheet.ocr_done) {
       setUpdateBoundingBoxes(true);
     }
-  }, 5000);
+  }, 5001);
 
   return (
-    <Section>
+    <div>
       <Button onClick={() => setUpdateBoundingBoxes((prev) => !prev)}>
         Toggle
       </Button>
@@ -47,6 +47,6 @@ export const Worksheet = () => {
       ) : (
         <WorksheetLabelling />
       )}
-    </Section>
+    </div>
   );
 };
