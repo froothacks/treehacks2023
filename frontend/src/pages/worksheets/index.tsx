@@ -101,7 +101,6 @@ const UploadWorksheetsModal: React.FC<UploadWorksheetsProps> = ({
           <ModalHeader>
             <Heading>Create Worksheet</Heading>
           </ModalHeader>
-          <ModalCloseButton />
           <ModalBody>
             <FormControl>
               <FormLabel>Worksheet Name</FormLabel>
@@ -130,16 +129,16 @@ const UploadWorksheetsModal: React.FC<UploadWorksheetsProps> = ({
             </FormControl>
           </ModalBody>
           <ModalFooter>
+            <Button onClick={onClose} variant="outline" mr={4}>
+              Close
+            </Button>
             <Button
-              mr={4}
               disabled={!answerKey || !blankWorksheet}
               onClick={handleCreateWorksheet}
-              variant={""}
+              variant={"solid"}
             >
               <Text>Upload Worksheet</Text>
             </Button>
-
-            <Button onClick={onClose}>Close</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

@@ -25,6 +25,9 @@ def get_answers(image, worksheetId, bboxs):
     for i in range(len(bboxs)):
         bboxs[i]["text_answer"] = response[i]
         client.mutation("sendMessage:createBoundingBoxes", {"worksheetID": worksheetId, "box": bboxs[i]})
+    print(worksheetId)
+    client.mutation("sendMessage:updateWorksheetLabelling", {"worksheetID": worksheetId })
+
 
 
 def get_img(url):

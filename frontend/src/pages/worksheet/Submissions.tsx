@@ -16,6 +16,9 @@ import {
   FormLabel,
   Spacer,
   Input,
+  Box,
+  Heading,
+  Spinner,
 } from "@chakra-ui/react";
 import { Id } from "src/convex/_generated/dataModel";
 
@@ -24,6 +27,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { BaseRoute, QueryParams } from "src/constants/routes";
 import { useMutation, useQuery } from "src/convex/_generated/react";
 import { useUploadImage } from "src/hooks/api";
+import { AddIcon } from "@chakra-ui/icons";
+import styled from "@emotion/styled";
 
 type UploadWorksheetsProps = {
   worksheet_id: string;
@@ -62,9 +67,9 @@ const UploadSubmissionModal: React.FC<UploadWorksheetsProps> = ({
       setSubmissions(null);
 
       onClose();
-      if (res.length == 1) {
-        navigate(`${BaseRoute.SUBMISSIONS}/${res[0]}`);
-      }
+      // if (res.length == 1) {
+      //   navigate(`${BaseRoute.SUBMISSIONS}/${res[0]}`);
+      // }
     }
   };
   return (
@@ -107,6 +112,13 @@ const UploadSubmissionModal: React.FC<UploadWorksheetsProps> = ({
   );
 };
 
+const MotionCard = styled(Card)`
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    transform: scale(1.01);
+  }
+`;
+
 export const WorksheetSubmissions = () => {
   const params = useParams();
   const navigate = useNavigate();
@@ -133,24 +145,35 @@ export const WorksheetSubmissions = () => {
 
   return (
     <div>
-      <Button onClick={onOpen}>Add submission</Button>
-      <Spacer w={4} />
-      <Button onClick={startGrading}>Start Grading</Button>
+      <Box display={"flex"} justifyContent="space-between">
+        <Heading>Submissions</Heading>
+        <Box>
+          <Button onClick={onOpen} leftIcon={<AddIcon boxSize={3} />}>
+            <Text>Create</Text>
+          </Button>
+          <Spacer w={4} />
+          <Button onClick={startGrading}>Start Grading</Button>
+        </Box>
+      </Box>
 
       <List spacing={3}>
         {submissions.map((sub: any) => {
           const id = sub._id.id;
           return (
             <ListItem>
-              <Card>
-                <Link
-                  onClick={() => navigate(`${BaseRoute.SUBMISSIONS}/${id}`)}
-                >
-                  <CardBody>
-                    <Text>{`Submission ${id}`}</Text>
-                  </CardBody>
-                </Link>
-              </Card>
+              <MotionCard key={id} boxShadow="lg" borderRadius={16}>
+                <CardBody>
+                  <Box display={"flex"} justifyContent="space-between">
+                    <Text>Advait's Submission</Text>
+                    {/* <Text>Score: </Text> */}
+                    <Box display={"flex"} alignItems="center">
+                      <Text mr="3">Grading</Text>
+                      <Spinner size={"sm"} />
+                    </Box>
+                    {/* <Text>Score: </Text> */}
+                  </Box>
+                </CardBody>
+              </MotionCard>
             </ListItem>
           );
         })}
