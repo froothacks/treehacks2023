@@ -161,7 +161,7 @@ export const Worksheet = () => {
   <div>
   {boxes ?
   <Box pb={8}>
-    <WorksheetLabeller boxesInput={boxes} ansURL={worksheet.answer_url}/>
+    <WorksheetLabeller boxesInput={boxes} ansURL={worksheet.answer_url} worksheetId={ws_id}/>
   </Box> : <Spinner />}
   </div>
   )

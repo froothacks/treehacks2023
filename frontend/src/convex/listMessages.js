@@ -1,4 +1,5 @@
 import {query} from "./_generated/server";
+import {Id} from "./_generated/dataModel";
 
 // export default query(async ({ db, storage }) => {
 //   const messages = await db.query("worksheets").collect();
@@ -27,7 +28,7 @@ export const getAllWorksheets = query(async ({db, storage}) => {
 });
 
 export const getWorksheet = query(async ({db}, worksheetID) => {
-    return await db.get(worksheetID);
+    return await db.get(new Id("worksheets", worksheetID));
 });
 
 export const getAllSubmissions = query(async ({db, storage}) => {

@@ -1,4 +1,4 @@
-from multiprocessing import Pool
+from multiprocessing import Pool, Process
 from pprint import pprint
 
 import cv2
@@ -20,9 +20,11 @@ bbParser = Parser()
 client.debug = True
 
 
-def get_answers(image, bboxs):
+def get_answers(image, worksheetId, bboxs):
     response = bbParser.get_text_for_bounding_boxes(image, bboxs)
-    pprint(response)
+    for i in range(len(bboxs)):
+        bboxs[i]["text_answer"] = response[i]
+        client.mutation("sendMessage:createBoundingBoxes", {"worksheetID": worksheetId, "box": bboxs[i]})
 
 
 def get_img(url):
@@ -45,11 +47,20 @@ class BoundingBoxService(Resource):
 
 
 class AddBoundingBoxesService(Resource):
+
+    @staticmethod
+    def run(worksheetId, boxes):
+        worksheet = client.query("listMessages:getWorksheet", worksheetId)
+        get_answers(get_img(worksheet["answer_url"]), worksheetId, boxes)
+
+
     def post(self):
         json_data = request.get_json(force=True)
         worksheetId = json_data['worksheetId']
         boxes = json_data['boundingBoxes']
-        client.mutation("sendMessage:createBoundingBoxes", {"worksheetID": worksheetId, "box": boxes})
+        p = Process(target=AddBoundingBoxesService.run, args=(worksheetId, boxes))
+        p.start()
+
 
 
 class StartGrading(Resource):

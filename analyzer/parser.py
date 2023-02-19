@@ -90,19 +90,20 @@ class Parser:
         images = []
         output = []
         for box in bounding_boxes:
-            w = box["width"]
-            h = box["height"]
-            x = box["x"]
-            y = box["y"]
+            w = int(float(box["width"]))
+            h = int(float(box["height"]))
+            x = int(float(box["x"]))
+            y = int(float(box["y"]))
 
             sliced = image[y: y + h, x: x + w]
+            show([], sliced)
             images.append(sliced)
 
         generated_text = self.__extract_text_from_images(images)
         for g in generated_text:
             output.append(g)
 
-        return bounding_boxes
+        return output
 
     def __extract_text_from_images(self, images):
         start = time.time()

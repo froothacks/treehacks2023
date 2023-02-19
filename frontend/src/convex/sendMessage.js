@@ -53,11 +53,8 @@ export const createSubmission = mutation(
 );
 
 export const createBoundingBoxes = mutation(
-  async ({ db }, { worksheetID, box: BBs }) => {
-    console.log(worksheetID, BBs);
-    await Promise.all(
-      BBs?.map((bb) => db.insert("boundingboxes", { ...bb, worksheetID }))
-    );
+  async ({ db }, { worksheetID, box }) => {
+    return await db.insert("boundingboxes", {...box, worksheetID})
   }
 );
 
